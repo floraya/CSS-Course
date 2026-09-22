@@ -96,6 +96,26 @@
 
 ---
 
+## 🌐 GitHub Pages 部署設定步驟 (免白畫面最佳解法)
+
+由於本專案採用 **Vite + React + TypeScript** 架構，瀏覽器無法直接執行未編譯的 `.tsx` 原始碼；且 GitHub Pages 部署在專案子路徑（如 `/CSS-Course/`），因此需要注意以下兩點：
+
+### ✅ 已自動為您修正的項目：
+1. **`vite.config.ts` 已加入 `base: './'`**：
+   - 確保打包後的 JavaScript 與 CSS 資源路徑使用相對路徑，不會因為 GitHub 倉庫名稱 (`/CSS-Course/`) 導致資源 404 Not Found。
+2. **已新增 `.github/workflows/deploy.yml` 自動部署腳本**：
+   - 每次 Push 到 `main` 分支時，GitHub Actions 會自動執行 `npm install` 與 `npm run build`，並將打包完成的 `dist` 目錄部署到 GitHub Pages。
+
+### ⚙️ 您只需在 GitHub 儲存庫設定：
+1. 前往 GitHub 專案頁面，點選上方 **Settings** 齒輪。
+2. 在左側選單點選 **Pages**。
+3. 在 **Build and deployment** 下方的 **Source** 下拉選單：
+   - 將 **Deploy from a branch** 改為 👉 **GitHub Actions**。
+4. 儲存後，到專案的 **Actions** 頁籤，即可看到自動打包部署流程正在執行。
+5. 待部署任務打綠勾後，重新開啟 `https://floraya.github.io/CSS-Course/` 即可正常顯示！
+
+---
+
 ## 📁 專案目錄結構 (Project Structure)
 
 ```text
