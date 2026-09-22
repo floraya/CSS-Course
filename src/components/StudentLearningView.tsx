@@ -60,9 +60,20 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
   // 切換單元時：如果是新單元，預設清空讓學生填寫；若有已存檔的自填程式碼則載入
   useEffect(() => {
     const loaded = progress.savedCustomCss[lesson.id];
-    setCssCode(loaded !== undefined ? loaded : '');
+    const initialCss = loaded !== undefined ? loaded : '';
+    setCssCode(initialCss);
     setHasValidated(false);
-    setIsPassed(progress.completedLessonIds.includes(lesson.id));
+
+    // 檢查是否有實質程式碼（排除空白與註解）
+    const clean = initialCss.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+    const actuallyPassed = clean.length > 0 && progress.completedLessonIds.includes(lesson.id);
+    setIsPassed(actuallyPassed);
+
+    // 若根本沒寫程式碼，卻在 completedLessonIds 內，及時校正清除
+    if (!actuallyPassed && progress.completedLessonIds.includes(lesson.id)) {
+      onSaveProgress(lesson.id, initialCss, false);
+    }
+
     setCheckResults([]);
     setShowHint(false);
     setShowAnswer(false);
@@ -308,6 +319,11 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
                     setCssCode(val);
                     setHasValidated(false);
                     if (emptyWarning) setEmptyWarning(false);
+                    const clean = val.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+                    if (!clean && isPassed) {
+                      setIsPassed(false);
+                      onSaveProgress(lesson.id, val, false);
+                    }
                   }}
                   placeholder={`/* 支援 VS Code 快捷體驗：
    1. 輸入 "{" 自動補全 "}"
@@ -380,8 +396,8 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
               })}
             </div>
 
-            {/* 通關獎勵與前進下一課 */}
-            {isPassed && (
+            {/* 通關獎勵與前進下一課：必須真的通過且有實質 CSS 程式碼才顯示 */}
+            {isPassed && cssCode.replace(/\/\*[\s\S]*?\*\//g, '').trim().length > 0 && (
               <div className="pt-2 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400">
                   <Award className="w-4 h-4 text-amber-400" />

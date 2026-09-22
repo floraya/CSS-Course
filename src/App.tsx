@@ -35,7 +35,22 @@ export default function App() {
   const [progress, setProgress] = useState<UserProgress>(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) return JSON.parse(saved);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Cleanse corrupted completedLessonIds where student actually has empty CSS
+        if (parsed && Array.isArray(parsed.completedLessonIds)) {
+          const savedCss = parsed.savedCustomCss || {};
+          const validatedCompleted = parsed.completedLessonIds.filter((id: string) => {
+            const css = savedCss[id] || '';
+            const clean = css.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+            return clean.length > 0;
+          });
+          parsed.completedLessonIds = validatedCompleted;
+          parsed.completedChallengesCount = validatedCompleted.length;
+          parsed.studentXp = validatedCompleted.length * 50;
+        }
+        return parsed;
+      }
     } catch (e) {
       console.warn('Failed to load progress from localStorage:', e);
     }
@@ -80,15 +95,19 @@ export default function App() {
 
   const handleSaveProgress = (lessonId: string, customCss: string, passed: boolean) => {
     setProgress((prev) => {
-      const alreadyCompleted = prev.completedLessonIds.includes(lessonId);
-      const newCompleted = passed && !alreadyCompleted
-        ? [...prev.completedLessonIds, lessonId]
-        : prev.completedLessonIds;
+      let newCompleted: string[];
+      if (passed) {
+        newCompleted = prev.completedLessonIds.includes(lessonId)
+          ? prev.completedLessonIds
+          : [...prev.completedLessonIds, lessonId];
+      } else {
+        newCompleted = prev.completedLessonIds.filter((id) => id !== lessonId);
+      }
 
       return {
         ...prev,
         completedLessonIds: newCompleted,
-        studentXp: prev.studentXp + (passed && !alreadyCompleted ? 50 : 0),
+        studentXp: newCompleted.length * 50,
         completedChallengesCount: newCompleted.length,
         savedCustomCss: {
           ...prev.savedCustomCss,
