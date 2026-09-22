@@ -12,7 +12,8 @@ import {
   BookOpen,
   Code2,
   Sparkles,
-  Maximize2
+  Maximize2,
+  AlertCircle
 } from 'lucide-react';
 import { Lesson, UserProgress } from '../types';
 import { validateChallenge, CheckResult } from '../utils/codeValidator';
@@ -46,6 +47,7 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
   const [showConcept, setShowConcept] = useState<boolean>(false);
+  const [emptyWarning, setEmptyWarning] = useState<boolean>(false);
   const [checkResults, setCheckResults] = useState<CheckResult[]>([]);
   const [hasValidated, setHasValidated] = useState<boolean>(false);
   const [isPassed, setIsPassed] = useState<boolean>(
@@ -64,10 +66,25 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
     setCheckResults([]);
     setShowHint(false);
     setShowAnswer(false);
+    setEmptyWarning(false);
     setActiveTab('css');
   }, [lesson.id]);
 
   const handleValidate = () => {
+    const codeWithoutComments = cssCode.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+
+    // 如果學生完全沒寫 CSS，嚴格判定不通過並提出提醒
+    if (!codeWithoutComments) {
+      setEmptyWarning(true);
+      const results = validateChallenge(lesson.challenge.checks, '', null);
+      setCheckResults(results);
+      setHasValidated(true);
+      setIsPassed(false);
+      onSaveProgress(lesson.id, cssCode, false);
+      return;
+    }
+
+    setEmptyWarning(false);
     const iframeDoc = iframeRef.current?.contentDocument || null;
     const results = validateChallenge(lesson.challenge.checks, cssCode, iframeDoc);
     setCheckResults(results);
@@ -92,6 +109,9 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
     if (window.confirm('確定要清空程式碼，重新自己填寫嗎？')) {
       setCssCode('');
       setHasValidated(false);
+      setCheckResults([]);
+      setIsPassed(false);
+      setEmptyWarning(false);
       onSaveProgress(lesson.id, '', false);
     }
   };
@@ -100,6 +120,7 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
     setCssCode(lesson.challenge.solutionCss);
     setShowAnswer(false);
     setHasValidated(false);
+    setEmptyWarning(false);
   };
 
   const isCapstone = lesson.id === 'css-capstone-landing-page';
@@ -286,6 +307,7 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
                   onChange={(val) => {
                     setCssCode(val);
                     setHasValidated(false);
+                    if (emptyWarning) setEmptyWarning(false);
                   }}
                   placeholder={`/* 支援 VS Code 快捷體驗：
    1. 輸入 "{" 自動補全 "}"
@@ -317,33 +339,42 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
               </button>
             </div>
 
+            {/* 空白未寫提示警告條 */}
+            {emptyWarning && (
+              <div className="p-3 rounded-lg bg-rose-500/15 border border-rose-500/40 text-rose-200 text-xs flex items-center gap-2.5 animate-fadeIn">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span className="font-medium">⚠️ 尚未編寫任何 CSS 程式碼！請先在上方編輯器填寫 CSS 樣式後再按檢查。</span>
+              </div>
+            )}
+
             {/* 檢查條列 */}
             <div className="space-y-1.5">
               {lesson.challenge.checks.map((check) => {
                 const res = checkResults.find((r) => r.checkId === check.id);
-                const pass = res ? res.passed : isPassed;
+                const hasResult = hasValidated && res !== undefined;
+                const pass = res?.passed ?? false;
 
                 return (
                   <div
                     key={check.id}
                     className={`flex items-center gap-2 p-2 rounded-lg text-xs ${
-                      hasValidated && !pass
+                      hasResult && !pass
                         ? 'bg-rose-950/20 text-rose-200 border border-rose-800/40'
-                        : pass
+                        : hasResult && pass
                         ? 'bg-emerald-950/20 text-emerald-200 border border-emerald-800/40'
                         : 'bg-slate-950 text-slate-400'
                     }`}
                   >
-                    {pass ? (
+                    {hasResult && pass ? (
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    ) : hasValidated ? (
+                    ) : hasResult && !pass ? (
                       <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
                     ) : (
                       <div className="w-4 h-4 rounded-full border border-slate-600 flex items-center justify-center text-[10px] text-slate-500 shrink-0">
                         •
                       </div>
                     )}
-                    <span>{check.description}</span>
+                    <span>{res?.message || check.description}</span>
                   </div>
                 );
               })}
