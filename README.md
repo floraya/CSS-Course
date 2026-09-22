@@ -100,19 +100,77 @@
 
 由於本專案採用 **Vite + React + TypeScript** 架構，瀏覽器無法直接執行未編譯的 `.tsx` 原始碼；且 GitHub Pages 部署在專案子路徑（如 `/CSS-Course/`），因此需要注意以下兩點：
 
-### ✅ 已自動為您修正的項目：
-1. **`vite.config.ts` 已加入 `base: './'`**：
-   - 確保打包後的 JavaScript 與 CSS 資源路徑使用相對路徑，不會因為 GitHub 倉庫名稱 (`/CSS-Course/`) 導致資源 404 Not Found。
-2. **已新增 `.github/workflows/deploy.yml` 自動部署腳本**：
-   - 每次 Push 到 `main` 分支時，GitHub Actions 會自動執行 `npm install` 與 `npm run build`，並將打包完成的 `dist` 目錄部署到 GitHub Pages。
+### ✅ 已為您完成的架構與程式碼修正：
+1. **`vite.config.ts` 已設定 `base: './'`**：
+   - 打包後的靜態資源自動使用自適應相對路徑，徹底解決在 GitHub Pages 子路徑 (`/CSS-Course/`) 下資源 404 的問題。
+2. **已配置 `.github/workflows/static.yml`（GitHub Pages 官方標準建置發布流程）**：
+   - 每次 Push 到 `main` 分支時，GitHub Actions 會自動在雲端執行 `npm install --legacy-peer-deps` 與 `npm run build`，並將打包完成的 `dist/` 靜態檔案發布至 GitHub Pages。
+   - 移除了 `cache: 'npm'` 限制，避免因為缺少 lock 檔案而報錯中斷。
+3. **加入 `.nojekyll` 與 `public/.nojekyll`**：
+   - 防止 GitHub Pages 預設的 Jekyll 引擎忽略或過濾必要資源檔。
+4. **加入 `public/404.html`**：
+   - 支援 SPA 單頁應用程式路由重定向。
 
-### ⚙️ 您只需在 GitHub 儲存庫設定：
-1. 前往 GitHub 專案頁面，點選上方 **Settings** 齒輪。
-2. 在左側選單點選 **Pages**。
-3. 在 **Build and deployment** 下方的 **Source** 下拉選單：
-   - 將 **Deploy from a branch** 改為 👉 **GitHub Actions**。
-4. 儲存後，到專案的 **Actions** 頁籤，即可看到自動打包部署流程正在執行。
-5. 待部署任務打綠勾後，重新開啟 `https://floraya.github.io/CSS-Course/` 即可正常顯示！
+### ⚙️ 您在 GitHub 儲存庫上的操作步驟（直接更新 `static.yml`）：
+如果您在 GitHub 上已建立了 `.github/workflows/static.yml`，請至 GitHub 儲存庫：
+1. 進入檔案：`.github/workflows/static.yml`。
+2. 點擊右上角鉛筆圖示（**Edit this file**）。
+3. 將裡面的內容替換為以下內容：
+```yaml
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Build project
+        run: npm run build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+```
+4. 點擊右上方綠色 **Commit changes** 儲存。
+5. （建議）若倉庫中還有舊的 `.github/workflows/jekyll-gh-pages.yml`，可點進該檔案並點選垃圾桶圖示刪除，避免舊任務衝突。
+6. 前往 **Actions** 頁籤，等待任務跑完（顯示綠色打勾）。
+7. 開啟 [https://floraya.github.io/CSS-Course/](https://floraya.github.io/CSS-Course/)（請按 `Ctrl + F5` 強制重新整理），網站即可完美呈現！
 
 ---
 
