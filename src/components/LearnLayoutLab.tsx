@@ -98,9 +98,6 @@ export const LearnLayoutLab: React.FC<LearnLayoutLabProps> = ({
               <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-1.5">
                 LearnLayout 排版互動實驗室
               </h2>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-medium border border-cyan-500/30">
-                致敬 zh-tw.learnlayout.com
-              </span>
             </div>
             <p className="text-xs text-slate-400">
               用最直觀的視覺實驗，搞懂 CSS 版面配置的核心底層心智模型
@@ -121,24 +118,24 @@ export const LearnLayoutLab: React.FC<LearnLayoutLabProps> = ({
         </div>
       </div>
 
-      {/* 導覽按鈕列 (6 大實驗切換) */}
-      <div className="bg-slate-900/60 border-b border-slate-800/80 px-3 py-2 flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
+      {/* 導覽按鈕列 (6 大實驗切換：免左右滑動，直接點擊) */}
+      <div className="bg-slate-900/70 border-b border-slate-800/80 p-2 sm:p-2.5 grid grid-cols-3 sm:grid-cols-6 gap-1.5">
         {experimentTabs.map((tab) => {
           const isActive = activeExperiment === tab.id;
           return (
             <button
               key={tab.id}
               onClick={() => setActiveExperiment(tab.id)}
-              className={`px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all flex items-center gap-2 ${
+              className={`p-2 rounded-xl text-xs transition-all flex flex-col items-center justify-center text-center gap-1 ${
                 isActive
-                  ? 'bg-sky-500 text-slate-950 font-bold shadow-md shadow-sky-500/20'
-                  : 'bg-slate-950/60 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-800/80'
+                  ? 'bg-sky-500 text-slate-950 font-bold shadow-md shadow-sky-500/20 ring-1 ring-sky-300'
+                  : 'bg-slate-950/70 text-slate-300 hover:bg-slate-800 hover:text-white border border-slate-800/80'
               }`}
             >
-              <span>{tab.icon}</span>
-              <div className="text-left">
-                <div>{tab.title}</div>
-                <div className={`text-[10px] ${isActive ? 'text-slate-900/80 font-normal' : 'text-slate-500'}`}>
+              <span className="text-base leading-none">{tab.icon}</span>
+              <div className="w-full">
+                <div className="font-bold text-[11px] leading-tight truncate">{tab.title}</div>
+                <div className={`text-[9px] leading-tight truncate mt-0.5 ${isActive ? 'text-slate-950/80 font-medium' : 'text-slate-500'}`}>
                   {tab.subtitle}
                 </div>
               </div>
@@ -291,7 +288,7 @@ export const LearnLayoutLab: React.FC<LearnLayoutLabProps> = ({
                     <span>📐 margin: auto 水平置中與 max-width 的救贖</span>
                   </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    參考 zh-tw.learnlayout.com/max-width.html：為什麼設定死寬度在手機上是災難？
+                    核心剖析：為什麼在行動裝置寫死固定寬度 (width) 是排版災難？
                   </p>
                 </div>
 
@@ -320,30 +317,77 @@ export const LearnLayoutLab: React.FC<LearnLayoutLabProps> = ({
                 </div>
               </div>
 
-              {/* 視窗寬度拉桿 */}
-              <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 mb-4">
-                <div className="flex items-center justify-between text-xs mb-2">
+              {/* 視窗寬度拉桿與快捷設備按鈕（免左右滑動，一按即變） */}
+              <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 mb-4 space-y-3">
+                <div className="flex flex-wrap items-center justify-between text-xs gap-2">
                   <span className="text-slate-300 font-semibold flex items-center gap-1.5">
                     <Sliders className="w-3.5 h-3.5 text-sky-400" />
-                    <span>模擬瀏覽器視窗寬度 (Viewport Width)：</span>
+                    <span>模擬瀏覽器視窗寬度：</span>
                   </span>
-                  <span className="font-mono text-sky-400 font-bold px-2 py-0.5 rounded bg-sky-950 border border-sky-500/30">
-                    {viewportWidth}px {viewportWidth <= 480 ? '📱 手機視窗' : viewportWidth <= 768 ? '📟 平板視窗' : '💻 桌機視窗'}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sky-400 font-bold px-2 py-0.5 rounded bg-sky-950 border border-sky-500/30 text-xs">
+                      {viewportWidth}px
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      {viewportWidth <= 420 ? '📱 小型手機' : viewportWidth <= 520 ? '📱 大螢幕手機' : viewportWidth <= 640 ? '📟 平板電腦' : '💻 桌機視窗'}
+                    </span>
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="320"
-                  max="680"
-                  step="10"
-                  value={viewportWidth}
-                  onChange={(e) => setViewportWidth(Number(e.target.value))}
-                  className="w-full accent-sky-500 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] text-slate-500 mt-1 font-mono">
-                  <span>320px (超窄手機)</span>
-                  <span>480px (大螢幕手機)</span>
-                  <span>680px (平版/小筆電)</span>
+
+                {/* 常用設備尺寸一鍵切換（最直覺省力） */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-xs">
+                  {[
+                    { label: '📱 窄手機', width: 340 },
+                    { label: '📱 大手機', width: 440 },
+                    { label: '📟 平板', width: 560 },
+                    { label: '💻 滿版視窗', width: 680 },
+                  ].map((preset) => (
+                    <button
+                      key={preset.width}
+                      type="button"
+                      onClick={() => setViewportWidth(preset.width)}
+                      className={`px-2 py-1.5 rounded-lg border text-xs font-semibold transition-all ${
+                        viewportWidth === preset.width
+                          ? 'bg-sky-500/20 text-sky-300 border-sky-500/50 shadow-xs ring-1 ring-sky-500/30'
+                          : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800'
+                      }`}
+                    >
+                      {preset.label} <span className="font-mono text-[10px] opacity-75">{preset.width}px</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* 步進微調按鈕 + 易滑動拉桿 */}
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setViewportWidth((prev) => Math.max(320, prev - 20))}
+                    className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold font-mono transition-colors shrink-0"
+                    title="縮小 20px"
+                  >
+                    -20px
+                  </button>
+
+                  <div className="flex-1 relative flex items-center">
+                    <input
+                      type="range"
+                      min="320"
+                      max="680"
+                      step="10"
+                      value={viewportWidth}
+                      onChange={(e) => setViewportWidth(Number(e.target.value))}
+                      className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-sky-400"
+                    />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setViewportWidth((prev) => Math.min(680, prev + 20))}
+                    className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold font-mono transition-colors shrink-0"
+                    title="放大 20px"
+                  >
+                    +20px
+                  </button>
                 </div>
               </div>
 
@@ -444,36 +488,112 @@ export const LearnLayoutLab: React.FC<LearnLayoutLabProps> = ({
                 </div>
               </div>
 
-              {/* 即時調整 Padding 與 Border 的拉桿 */}
+              {/* 即時調整 Padding 與 Border 的控制面板（含步進器與快捷按鈕） */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 text-xs">
-                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                  <div className="flex justify-between text-slate-300 font-semibold mb-1">
+                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                  <div className="flex justify-between items-center text-slate-300 font-semibold">
                     <span>Padding 內距泡綿：</span>
-                    <span className="font-mono text-emerald-400">{paddingSize}px</span>
+                    <span className="font-mono text-emerald-400 font-bold text-sm">{paddingSize}px</span>
                   </div>
-                  <input
-                    type="range"
-                    min="8"
-                    max="40"
-                    value={paddingSize}
-                    onChange={(e) => setPaddingSize(Number(e.target.value))}
-                    className="w-full accent-emerald-500"
-                  />
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setPaddingSize((prev) => Math.max(8, prev - 4))}
+                      className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-mono font-bold text-xs"
+                      title="減少 4px"
+                    >
+                      -4
+                    </button>
+                    <input
+                      type="range"
+                      min="8"
+                      max="40"
+                      step="2"
+                      value={paddingSize}
+                      onChange={(e) => setPaddingSize(Number(e.target.value))}
+                      className="flex-1 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setPaddingSize((prev) => Math.min(40, prev + 4))}
+                      className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-mono font-bold text-xs"
+                      title="增加 4px"
+                    >
+                      +4
+                    </button>
+                  </div>
+
+                  {/* 快速預設 */}
+                  <div className="flex gap-1.5 pt-0.5">
+                    {[10, 20, 32].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setPaddingSize(val)}
+                        className={`flex-1 py-0.5 text-[10px] rounded border transition-colors ${
+                          paddingSize === val
+                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-bold'
+                            : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200'
+                        }`}
+                      >
+                        {val}px
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                  <div className="flex justify-between text-slate-300 font-semibold mb-1">
+                <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-2">
+                  <div className="flex justify-between items-center text-slate-300 font-semibold">
                     <span>Border 邊框厚度：</span>
-                    <span className="font-mono text-amber-400">{borderSize}px</span>
+                    <span className="font-mono text-amber-400 font-bold text-sm">{borderSize}px</span>
                   </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="16"
-                    value={borderSize}
-                    onChange={(e) => setBorderSize(Number(e.target.value))}
-                    className="w-full accent-amber-500"
-                  />
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setBorderSize((prev) => Math.max(1, prev - 2))}
+                      className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-mono font-bold text-xs"
+                      title="減少 2px"
+                    >
+                      -2
+                    </button>
+                    <input
+                      type="range"
+                      min="1"
+                      max="16"
+                      step="1"
+                      value={borderSize}
+                      onChange={(e) => setBorderSize(Number(e.target.value))}
+                      className="flex-1 h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setBorderSize((prev) => Math.min(16, prev + 2))}
+                      className="px-2 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-300 font-mono font-bold text-xs"
+                      title="增加 2px"
+                    >
+                      +2
+                    </button>
+                  </div>
+
+                  {/* 快速預設 */}
+                  <div className="flex gap-1.5 pt-0.5">
+                    {[2, 6, 12].map((val) => (
+                      <button
+                        key={val}
+                        type="button"
+                        onClick={() => setBorderSize(val)}
+                        className={`flex-1 py-0.5 text-[10px] rounded border transition-colors ${
+                          borderSize === val
+                            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-bold'
+                            : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:text-slate-200'
+                        }`}
+                      >
+                        {val}px
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 

@@ -54,7 +54,7 @@ export const LessonSidebar: React.FC<LessonSidebarProps> = ({
     );
   }, [lessons, searchQuery]);
 
-  // 排版超能力標籤（致敬 LearnLayout）
+  // 排版核心概念標籤
   const getLayoutSuperpower = (id: string) => {
     switch (id) {
       case 'css-box-model-deep':

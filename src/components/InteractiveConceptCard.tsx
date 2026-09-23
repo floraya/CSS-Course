@@ -65,8 +65,8 @@ export const InteractiveConceptCard: React.FC<InteractiveConceptCardProps> = ({
           </div>
         </div>
 
-        {/* 頁籤切換 */}
-        <div className="flex items-center bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-xs">
+        {/* 頁籤切換（響應式平鋪換行，無須左右滑動） */}
+        <div className="flex flex-wrap items-center bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs gap-1">
           <button
             type="button"
             onClick={() => setActiveTab('diagram')}

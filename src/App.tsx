@@ -9,7 +9,6 @@ import { UserProgress } from './types';
 import { TeacherTeachingView } from './components/TeacherTeachingView';
 import { StudentLearningView } from './components/StudentLearningView';
 import { LessonSidebar } from './components/LessonSidebar';
-import { LearnLayoutLab } from './components/LearnLayoutLab';
 import { 
   Award, 
   BookOpen, 
@@ -83,9 +82,6 @@ export default function App() {
 
   // 小螢幕側欄抽屜是否打開
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-
-  // 📐 LearnLayout 排版互動實驗室彈窗
-  const [isLabModalOpen, setIsLabModalOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -223,7 +219,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* 中間：角色模式切換（老師教學 vs 學生學習） + 📐 LearnLayout 排版實驗室 */}
+          {/* 中間：角色模式切換（老師教學 vs 學生學習） */}
           <div className="flex items-center gap-2">
             <div className="flex items-center p-1 bg-slate-950 border border-slate-800 rounded-xl">
               <button
@@ -250,19 +246,6 @@ export default function App() {
                 <span>🧑‍🎓 學生學習</span>
               </button>
             </div>
-
-            {/* 📐 LearnLayout 排版實驗室快捷入口 */}
-            <button
-              onClick={() => setIsLabModalOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all shadow-xs"
-              title="開啟 LearnLayout 排版互動實驗室"
-            >
-              <span className="text-sm">📐</span>
-              <span className="hidden sm:inline">排版實驗室</span>
-              <span className="text-[10px] bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-200 border border-amber-500/30 hidden lg:inline">
-                LearnLayout
-              </span>
-            </button>
           </div>
 
           {/* 右側：快速上一課 / 下一課切換 */}
@@ -339,26 +322,6 @@ export default function App() {
           </div>
         </main>
       </div>
-
-      {/* 📐 LearnLayout 排版實驗室全螢幕彈出視窗 */}
-      {isLabModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-fadeIn">
-          <div className="w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl">
-            <LearnLayoutLab
-              initialExperiment={
-                currentLesson.id === 'css-box-model-deep' ? 'box-sizing' :
-                currentLesson.id === 'css-display-modes' ? 'display' :
-                currentLesson.id === 'css-positioning-master' ? 'position' :
-                currentLesson.id === 'css-flexbox-superhero' ? 'flexbox' :
-                currentLesson.id === 'css-grid-layout' ? 'flexbox' :
-                currentLesson.id === 'css-responsive-media-queries' ? 'max-width' : 'display'
-              }
-              onClose={() => setIsLabModalOpen(false)}
-              isModal={true}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

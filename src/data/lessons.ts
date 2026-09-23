@@ -336,7 +336,7 @@ p {
   {
     id: 'css-box-model-deep',
     title: '盒模型、margin: auto 置中與拯救爆版的 box-sizing',
-    subtitle: '致敬 LearnLayout：網購包裹防撞哲學、width 寫死悲劇與 border-box 防爆裁縫',
+    subtitle: '排版精髓：網購包裹防撞哲學、width 寫死悲劇與 border-box 防爆裁縫',
     category: 'box-model',
     categoryName: '第 3 模組：盒模型與空間間距',
     difficulty: '入門',
@@ -459,7 +459,7 @@ p {
   {
     id: 'css-display-modes',
     title: 'display 三大形態：霸道 block、隨和 inline 與混血 inline-block',
-    subtitle: '致敬 LearnLayout：徹底搞懂元素為何自動換行、為何無視寬高、與 4px 空白幽靈',
+    subtitle: '排版精髓：徹底搞懂元素為何自動換行、為何無視寬高、與 4px 空白幽靈',
     category: 'display-position',
     categoryName: '第 4 模組：顯示模式與可見度',
     difficulty: '入門',
@@ -685,7 +685,7 @@ p {
   {
     id: 'css-positioning-master',
     title: 'position 家族大比拼：static 凡人、relative 幽靈與「子絕父相」',
-    subtitle: '致敬 LearnLayout：absolute 飛出銀河系的尋親冒險與 fixed 釘死視窗',
+    subtitle: '排版精髓：absolute 飛出銀河系的尋親冒險與 fixed 釘死視窗',
     category: 'display-position',
     categoryName: '第 6 模組：定位與版面佈局',
     difficulty: '進階',
@@ -822,7 +822,7 @@ p {
   {
     id: 'css-flexbox-superhero',
     title: 'Flexbox 一維彈性救世主：徹底告別 float 塌陷與垂直置中噩夢',
-    subtitle: '致敬 LearnLayout：一鍵 flex-direction、justify-content 與等高卡片奇蹟',
+    subtitle: '排版精髓：一鍵 flex-direction、justify-content 與等高卡片奇蹟',
     category: 'flexbox',
     categoryName: '第 7 模組：Flexbox 與 Grid',
     difficulty: '進階',
@@ -1302,7 +1302,7 @@ p {
   {
     id: 'css-responsive-media-queries',
     title: '響應式 RWD 跨屏變形記：像水一樣自適應手機、平板與桌機',
-    subtitle: '致敬 LearnLayout：max-width 流體容器、Media Queries 斷點與單多欄切換',
+    subtitle: '排版精髓：max-width 流體容器、Media Queries 斷點與單多欄切換',
     category: 'competition',
     categoryName: '第 11 模組：現代 CSS 與響應式',
     difficulty: '進階',
