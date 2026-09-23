@@ -226,8 +226,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
 
       {/* Editor & Live Preview 2-Column Split */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* Left Column: Code Editor (6 cols) */}
-        <div className="lg:col-span-6 space-y-3">
+        {/* Left Column: Code Editor (7 cols) */}
+        <div className="lg:col-span-7 space-y-3">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
             {/* Editor Toolbar */}
             <div className="flex items-center justify-between px-4 py-2.5 bg-slate-950 border-b border-slate-800">
@@ -373,8 +373,8 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
           </div>
         </div>
 
-        {/* Right Column: Live Sandbox Preview & DevTools (6 cols) */}
-        <div className="lg:col-span-6 space-y-3">
+        {/* Right Column: Live Sandbox Preview & DevTools (5 cols) */}
+        <div className="lg:col-span-5 space-y-3">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg flex flex-col">
             {/* Preview Toolbar */}
             <div className="px-4 py-2.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between gap-2 flex-wrap">

@@ -54,6 +54,26 @@ export const LessonSidebar: React.FC<LessonSidebarProps> = ({
     );
   }, [lessons, searchQuery]);
 
+  // 排版超能力標籤（致敬 LearnLayout）
+  const getLayoutSuperpower = (id: string) => {
+    switch (id) {
+      case 'css-box-model-deep':
+        return { tag: '📦 盒模型防爆', color: 'text-indigo-300 bg-indigo-950/70 border-indigo-500/40' };
+      case 'css-display-modes':
+        return { tag: '🧱 display 三形態', color: 'text-sky-300 bg-sky-950/70 border-sky-500/40' };
+      case 'css-positioning-master':
+        return { tag: '🧭 子絕父相', color: 'text-amber-300 bg-amber-950/70 border-amber-500/40' };
+      case 'css-flexbox-superhero':
+        return { tag: '⚡ Flexbox 神器', color: 'text-emerald-300 bg-emerald-950/70 border-emerald-500/40' };
+      case 'css-grid-layout':
+        return { tag: '▦ Grid 二維網格', color: 'text-purple-300 bg-purple-950/70 border-purple-500/40' };
+      case 'css-responsive-media-queries':
+        return { tag: '📱 跨屏 RWD', color: 'text-cyan-300 bg-cyan-950/70 border-cyan-500/40' };
+      default:
+        return null;
+    }
+  };
+
   // 渲染章節清單列表項目
   const renderLessonList = (onItemClick?: () => void) => (
     <div className="flex-1 overflow-y-auto p-3 space-y-1.5 custom-scrollbar">
@@ -115,6 +135,12 @@ export const LessonSidebar: React.FC<LessonSidebarProps> = ({
                     }`}>
                       {lesson.difficulty}
                     </span>
+
+                    {getLayoutSuperpower(lesson.id) && (
+                      <span className={`px-1.5 py-0.2 rounded text-[9px] font-bold border ${getLayoutSuperpower(lesson.id)?.color}`}>
+                        {getLayoutSuperpower(lesson.id)?.tag}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

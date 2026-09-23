@@ -135,16 +135,16 @@ export const TeacherTeachingView: React.FC<TeacherTeachingViewProps> = ({
 
       {/* 雙欄主教學區 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* 左欄：生動趣味解析卡片（比喻、PK 賽、金手口訣、語法）(6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
+        {/* 左欄：生動趣味解析卡片（比喻、PK 賽、金手口訣、語法）(7 cols) */}
+        <div className="lg:col-span-7 space-y-4">
           <InteractiveConceptCard
             lesson={lesson}
             onApplyQuickCss={(css) => setCustomTeacherCss(css)}
           />
         </div>
 
-        {/* 右欄：老師示範程式碼 + 即時大預覽 (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
+        {/* 右欄：老師示範程式碼 + 即時大預覽 (5 cols) */}
+        <div className="lg:col-span-5 space-y-4">
           {/* 即時預覽畫面 */}
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-md">
             <div className="px-4 py-2.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-300">

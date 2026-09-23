@@ -9,6 +9,7 @@ import { UserProgress } from './types';
 import { TeacherTeachingView } from './components/TeacherTeachingView';
 import { StudentLearningView } from './components/StudentLearningView';
 import { LessonSidebar } from './components/LessonSidebar';
+import { LearnLayoutLab } from './components/LearnLayoutLab';
 import { 
   Award, 
   BookOpen, 
@@ -17,7 +18,8 @@ import {
   ChevronRight, 
   RotateCcw,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  Sliders
 } from 'lucide-react';
 
 const STORAGE_KEY = 'css_champion_student_progress_v2';
@@ -39,7 +41,7 @@ export default function App() {
         const parsed = JSON.parse(saved);
         // Cleanse corrupted completedLessonIds where student actually has empty CSS
         if (parsed && Array.isArray(parsed.completedLessonIds)) {
-          const savedCss = parsed.savedCustomCss || {};
+          const savedCss = (parsed.savedCustomCss || {}) as Record<string, string>;
           const validatedCompleted = parsed.completedLessonIds.filter((id: string) => {
             const css = savedCss[id] || '';
             const clean = css.replace(/\/\*[\s\S]*?\*\//g, '').trim();
@@ -48,6 +50,16 @@ export default function App() {
           parsed.completedLessonIds = validatedCompleted;
           parsed.completedChallengesCount = validatedCompleted.length;
           parsed.studentXp = validatedCompleted.length * 50;
+
+          // 清理尚未完成單元的殘留代碼（確保未寫過的地方絕無程式碼）
+          const cleanedSavedCss: Record<string, string> = {};
+          for (const [id, css] of Object.entries(savedCss)) {
+            const clean = (css || '').replace(/\/\*[\s\S]*?\*\//g, '').trim();
+            if (clean.length > 0 && (validatedCompleted.includes(id) || id === parsed.currentLessonId)) {
+              cleanedSavedCss[id] = css;
+            }
+          }
+          parsed.savedCustomCss = cleanedSavedCss;
         }
         return parsed;
       }
@@ -71,6 +83,9 @@ export default function App() {
 
   // 小螢幕側欄抽屜是否打開
   const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
+  // 📐 LearnLayout 排版互動實驗室彈窗
+  const [isLabModalOpen, setIsLabModalOpen] = useState(false);
 
   useEffect(() => {
     try {
@@ -117,10 +132,32 @@ export default function App() {
     });
   };
 
+  // 即時更新草稿（不影響通關狀態，切換老師視角或重整前不丟失程式碼）
+  const handleUpdateDraftCss = (lessonId: string, customCss: string) => {
+    setProgress((prev) => ({
+      ...prev,
+      savedCustomCss: {
+        ...prev.savedCustomCss,
+        [lessonId]: customCss,
+      },
+    }));
+  };
+
   const handleNextLesson = () => {
     if (currentIndex < LESSONS.length - 1) {
       const nextId = LESSONS[currentIndex + 1].id;
-      setProgress((prev) => ({ ...prev, currentLessonId: nextId }));
+      setProgress((prev) => {
+        const newSaved = { ...prev.savedCustomCss };
+        // 如果下一單元尚未通過，確保全新未寫過的地方絕無殘留程式碼
+        if (!prev.completedLessonIds.includes(nextId)) {
+          delete newSaved[nextId];
+        }
+        return {
+          ...prev,
+          currentLessonId: nextId,
+          savedCustomCss: newSaved,
+        };
+      });
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -186,30 +223,45 @@ export default function App() {
             </div>
           </div>
 
-          {/* 中間：角色模式切換（老師教學 vs 學生學習） */}
-          <div className="flex items-center p-1 bg-slate-950 border border-slate-800 rounded-xl">
-            <button
-              onClick={() => setViewMode('teacher')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
-                viewMode === 'teacher'
-                  ? 'bg-sky-500 text-white shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>👨‍🏫 老師教學</span>
-            </button>
+          {/* 中間：角色模式切換（老師教學 vs 學生學習） + 📐 LearnLayout 排版實驗室 */}
+          <div className="flex items-center gap-2">
+            <div className="flex items-center p-1 bg-slate-950 border border-slate-800 rounded-xl">
+              <button
+                onClick={() => setViewMode('teacher')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+                  viewMode === 'teacher'
+                    ? 'bg-sky-500 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>👨‍🏫 老師教學</span>
+              </button>
 
+              <button
+                onClick={() => setViewMode('student')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
+                  viewMode === 'student'
+                    ? 'bg-emerald-500 text-slate-950 shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <Code2 className="w-4 h-4" />
+                <span>🧑‍🎓 學生學習</span>
+              </button>
+            </div>
+
+            {/* 📐 LearnLayout 排版實驗室快捷入口 */}
             <button
-              onClick={() => setViewMode('student')}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-bold transition-all ${
-                viewMode === 'student'
-                  ? 'bg-emerald-500 text-slate-950 shadow-sm'
-                  : 'text-slate-400 hover:text-white'
-              }`}
+              onClick={() => setIsLabModalOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/20 to-orange-500/20 hover:from-amber-500/30 hover:to-orange-500/30 border border-amber-500/40 text-amber-300 text-xs font-bold transition-all shadow-xs"
+              title="開啟 LearnLayout 排版互動實驗室"
             >
-              <Code2 className="w-4 h-4" />
-              <span>🧑‍🎓 學生學習</span>
+              <span className="text-sm">📐</span>
+              <span className="hidden sm:inline">排版實驗室</span>
+              <span className="text-[10px] bg-amber-500/20 px-1.5 py-0.5 rounded text-amber-200 border border-amber-500/30 hidden lg:inline">
+                LearnLayout
+              </span>
             </button>
           </div>
 
@@ -258,10 +310,11 @@ export default function App() {
           onCloseMobileDrawer={() => setIsMobileDrawerOpen(false)}
         />
 
-        {/* 主內容區塊 */}
+        {/* 主內容區塊：保持兩者掛載，切換時不遺失任何正在撰寫中的程式碼與游標狀態 */}
         <main className="flex-1 min-w-0 py-4 overflow-x-hidden">
-          {viewMode === 'teacher' ? (
+          <div className={viewMode === 'teacher' ? 'block' : 'hidden'}>
             <TeacherTeachingView
+              key={currentLesson.id}
               lesson={currentLesson}
               onSwitchToStudent={() => setViewMode('student')}
               onNextLesson={currentIndex < LESSONS.length - 1 ? handleNextLesson : undefined}
@@ -269,19 +322,43 @@ export default function App() {
               currentIndex={currentIndex}
               totalLessons={LESSONS.length}
             />
-          ) : (
+          </div>
+
+          <div className={viewMode === 'student' ? 'block' : 'hidden'}>
             <StudentLearningView
+              key={currentLesson.id}
               lesson={currentLesson}
               progress={progress}
               onSaveProgress={handleSaveProgress}
+              onUpdateDraftCss={handleUpdateDraftCss}
               onNextLesson={currentIndex < LESSONS.length - 1 ? handleNextLesson : undefined}
               onSwitchToTeacher={() => setViewMode('teacher')}
               currentIndex={currentIndex}
               totalLessons={LESSONS.length}
             />
-          )}
+          </div>
         </main>
       </div>
+
+      {/* 📐 LearnLayout 排版實驗室全螢幕彈出視窗 */}
+      {isLabModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-6 animate-fadeIn">
+          <div className="w-full max-w-4xl max-h-[92vh] flex flex-col shadow-2xl">
+            <LearnLayoutLab
+              initialExperiment={
+                currentLesson.id === 'css-box-model-deep' ? 'box-sizing' :
+                currentLesson.id === 'css-display-modes' ? 'display' :
+                currentLesson.id === 'css-positioning-master' ? 'position' :
+                currentLesson.id === 'css-flexbox-superhero' ? 'flexbox' :
+                currentLesson.id === 'css-grid-layout' ? 'flexbox' :
+                currentLesson.id === 'css-responsive-media-queries' ? 'max-width' : 'display'
+              }
+              onClose={() => setIsLabModalOpen(false)}
+              isModal={true}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

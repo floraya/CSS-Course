@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Sparkles, AlertTriangle, Lightbulb, Check, X, Code2, Zap, Trophy, HelpCircle, Eye, Palette } from 'lucide-react';
+import { Sparkles, AlertTriangle, Lightbulb, Check, X, Code2, Zap, Trophy, HelpCircle, Eye, Palette, Sliders } from 'lucide-react';
 import { Lesson } from '../types';
 import { ConceptDiagram } from './ConceptDiagram';
+import { LearnLayoutLab, LabExperimentType } from './LearnLayoutLab';
 
 interface InteractiveConceptCardProps {
   lesson: Lesson;
@@ -10,13 +11,31 @@ interface InteractiveConceptCardProps {
   defaultExpanded?: boolean;
 }
 
+const getExperimentForLesson = (lessonId: string): LabExperimentType => {
+  switch (lessonId) {
+    case 'css-box-model-deep':
+      return 'box-sizing';
+    case 'css-display-modes':
+      return 'display';
+    case 'css-positioning-master':
+      return 'position';
+    case 'css-flexbox-superhero':
+    case 'css-grid-layout':
+      return 'flexbox';
+    case 'css-responsive-media-queries':
+      return 'max-width';
+    default:
+      return 'display';
+  }
+};
+
 export const InteractiveConceptCard: React.FC<InteractiveConceptCardProps> = ({
   lesson,
   onApplyQuickCss,
   className = '',
   defaultExpanded = true,
 }) => {
-  const [activeTab, setActiveTab] = useState<'diagram' | 'metaphor' | 'badVsGood' | 'keyPoints' | 'syntax'>('diagram');
+  const [activeTab, setActiveTab] = useState<'diagram' | 'metaphor' | 'badVsGood' | 'keyPoints' | 'syntax' | 'lab'>('diagram');
   const [badVsGoodMode, setBadVsGoodMode] = useState<'bad' | 'good'>('bad');
   const [copiedCode, setCopiedCode] = useState(false);
 
@@ -111,6 +130,18 @@ export const InteractiveConceptCard: React.FC<InteractiveConceptCardProps> = ({
               <span>📋 語法庫</span>
             </button>
           )}
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('lab')}
+            className={`px-2.5 py-1 rounded-md font-bold transition-all flex items-center gap-1.5 ${
+              activeTab === 'lab'
+                ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                : 'text-amber-400 hover:text-amber-200 hover:bg-amber-400/10'
+            }`}
+          >
+            <span>📐 排版實驗室</span>
+          </button>
         </div>
       </div>
 
@@ -340,6 +371,16 @@ export const InteractiveConceptCard: React.FC<InteractiveConceptCardProps> = ({
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* 5. LearnLayout 排版互動實驗室分頁 */}
+        {activeTab === 'lab' && (
+          <div className="space-y-4 animate-fadeIn">
+            <LearnLayoutLab
+              initialExperiment={getExperimentForLesson(lesson.id)}
+              isModal={false}
+            />
           </div>
         )}
       </div>

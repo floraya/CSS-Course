@@ -331,26 +331,28 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 3 模組：盒模型與尺寸單位 (Box Model)
+  // 第 3 模組：盒模型與尺寸單位 (Box Model & LearnLayout)
   // -------------------------------------------------------------
   {
     id: 'css-box-model-deep',
-    title: 'CSS 盒模型與金手必備 box-sizing',
-    subtitle: '網購包裹哲學：商品、氣泡防撞泡棉、紙箱、包裹間距',
+    title: '盒模型、margin: auto 置中與拯救爆版的 box-sizing',
+    subtitle: '致敬 LearnLayout：網購包裹防撞哲學、width 寫死悲劇與 border-box 防爆裁縫',
     category: 'box-model',
     categoryName: '第 3 模組：盒模型與空間間距',
     difficulty: '入門',
+    fooishReferenceUrl: 'https://zh-tw.learnlayout.com/box-model.html',
     concept: {
-      summary: '網頁所有元素都是長方形盒子！預設模式 (content-box) 加 padding 會讓盒子向外爆開；而比賽必備的 border-box 則保證盒子寬高雷打不動！',
+      summary: '網頁所有元素都是長方形盒子！預設模式 (content-box) 加 padding 會讓盒子向外爆開撐破父容器；而 LearnLayout 與金手獎選手必備的 border-box 則保證盒子寬高雷打不動！',
       metaphor: {
         icon: '📦',
-        title: '網購包裹防撞比喻',
-        story: '• Content（內容物）：你要寄的手機或公仔本身。\n• Padding（內距）：包裹裡塞的透明氣泡防撞泡棉（保護內容物，向內呼吸）。\n• Border（邊框）：最外層厚紙箱的厚度與花紋。\n• Margin（外距）：你的包裹跟隔壁鄰居包裹保持的安全距離（防止黏在一起）。'
+        title: '網購包裹防撞與 LearnLayout 經典情境',
+        story: '參考經典教學 LearnLayout (zh-tw.learnlayout.com/box-sizing.html)：\n• Content（內容物）：你要寄的手機或公仔本身。\n• Padding（內距）：包裹裡塞的透明氣泡防撞泡棉（保護內容物，向內呼吸）。\n• Border（邊框）：最外層厚紙箱的厚度與花紋。\n• Margin（外距）：你的包裹跟隔壁鄰居包裹保持的安全距離（防止黏在一起）。\n\n【致命問題】當你宣告 width: 200px 又加了 20px padding 與 5px border，在 content-box 下總寬度居然變成了 250px！如果父容器只有 200px，盒子直接撐破外框破版！這就是為什麼所有現代前端工程師都在全域宣告 * { box-sizing: border-box; }！'
       },
       keyPoints: [
         '預設陷阱：width: 200px + padding: 20px ＝ 實際寬度變成 240px（整個版面破版擠破！）。',
         '神級救援：box-sizing: border-box，將 padding 和 border 內縮吸納進原本的寬度中！',
-        '全域重設咒語：* { box-sizing: border-box; } 是所有前端工程師開場第一行。'
+        '水平置中神技：margin: 0 auto 可以讓區塊元素水平置中，但前提是「必須具有固定寬度或 max-width」！',
+        '全域重設咒語：* { box-sizing: border-box; } 是所有專業切版開場第一行。'
       ],
       badVsGood: {
         badCode: '/* 忘記加 border-box，寬度算死 */\n.col-6 {\n  width: 50%;\n  padding: 20px;\n  border: 5px solid red;\n}',
@@ -362,11 +364,25 @@ p {
       syntaxTable: [
         { property: 'box-sizing', values: 'border-box | content-box', explanation: '控制盒子寬高計算規則（永遠設 border-box）' },
         { property: 'padding', values: '10px 20px (上下一組，左右一組)', explanation: '內側安全間距' },
-        { property: 'margin', values: '0 auto', explanation: '區塊元素水平自動置中神技' }
+        { property: 'margin', values: '0 auto', explanation: '區塊元素水平自動置中神技（需有寬度限制）' },
+        { property: 'max-width', values: '500px (自適應流體上限)', explanation: '取代寫死的 width，防範手機水平捲軸爆版' }
       ],
       championTip: '競賽一拿到考卷，第一件事就是在 style.css 最上方寫入 * { box-sizing: border-box; margin: 0; padding: 0; }，能幫你省下 80% 的破版 debug 時間！',
       commonPitfalls: [
-        '新手常常想讓盒子內縮一點，卻拼命狂加 margin，結果盒子反而被推擠位移！'
+        '新手常常想讓盒子內縮一點，卻拼命狂加 margin，結果盒子反而被推擠位移！',
+        '對元素寫了 margin: 0 auto 卻沒置中？請檢查是不是忘了設定 width 或 max-width！'
+      ],
+      quickToggles: [
+        {
+          label: '🛡️ border-box 鎖死防爆',
+          overrideCss: '.box-demo { box-sizing: border-box; width: 300px; padding: 30px; border: 4px solid #38bdf8; margin: 20px auto; background: #0f172a; color: white; border-radius: 8px; text-align: center; }',
+          desc: '寬度鎖死在 300px，Padding 向內壓縮'
+        },
+        {
+          label: '💥 content-box 撐爆變胖',
+          overrideCss: '.box-demo { box-sizing: content-box; width: 300px; padding: 30px; border: 4px solid #f43f5e; margin: 20px auto; background: #4c0519; color: white; border-radius: 8px; text-align: center; }',
+          desc: '寬度向外膨脹成 368px 撐爆父容器'
+        }
       ]
     },
     teacherCode: {
@@ -438,26 +454,28 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 4 模組：顯示模式 display (block / inline / inline-block / none)
+  // 第 4 模組：顯示模式 display (LearnLayout 核心基礎)
   // -------------------------------------------------------------
   {
     id: 'css-display-modes',
-    title: '元素四大形態：display 顯示模式全解',
-    subtitle: '霸道總裁 (Block) vs 社交名媛 (Inline) vs 文武雙全 (Inline-block)',
+    title: 'display 三大形態：霸道 block、隨和 inline 與混血 inline-block',
+    subtitle: '致敬 LearnLayout：徹底搞懂元素為何自動換行、為何無視寬高、與 4px 空白幽靈',
     category: 'display-position',
     categoryName: '第 4 模組：顯示模式與可見度',
     difficulty: '入門',
+    fooishReferenceUrl: 'https://zh-tw.learnlayout.com/display.html',
     concept: {
-      summary: 'HTML 元素預設有其性格：有的霸佔一整行，有的只能隨文字流動。display 是改寫元素物理特性的變形術。',
+      summary: 'HTML 元素預設有其排版物理性格：有的霸佔一整行，有的只能隨文字流動。display 是改寫元素物理特性的變形術。',
       metaphor: {
         icon: '🧱',
-        title: '霸道總裁與溫柔小鳥',
-        story: '• Block（霸道總裁，如 div, p, h1）：就算自己只有 10 公分寬，也一定要獨霸整條街（強制換行），可任意設定寬高。\n• Inline（社交小鳥，如 span, a）：隨文字飛舞並肩作戰，不能設定寬高（你給它設 width: 500px 它完全理都不理你！）。\n• Inline-Block（文武雙全，如 img, button）：既能跟別人排在同一行，又能自訂寬高！'
+        title: '巨石、文字河流與小木箱 (LearnLayout 經典模型)',
+        story: '參考經典教學 LearnLayout (zh-tw.learnlayout.com/display.html)：\n• Block（霸道巨石，如 div, p, h1）：就算內容只有 10px，也要獨佔整整一整行 (width: 100%)，可隨意設定寬高。\n• Inline（文字河流，如 span, a, strong）：像河水中的小游魚，只能順著文字流排隊。你給它設 width: 500px 它完全不理你，且上下 margin 完全不把別人推開！\n• Inline-Block（小木箱）：兼具兩者之美！既能跟別人坐在同一行，又能設定 width、height 與 padding！\n• 【金手秘辛】以前工程師用 inline-block 排版時，HTML 標籤間的換行空白會造成神秘的 4px 間隙，這就是為什麼現在大家都愛 Flexbox！'
       },
       keyPoints: [
         'display: block：寬度預設 100%，強制換行，支援全部盒模型屬性。',
         'display: inline：寬高由內容撐開，設定 width / height 無效，上下 margin 無效。',
-        'display: none vs visibility: hidden：前者連骨架一起消失（不佔空間）；後者隱形披風（人看不見但位置還在）。'
+        'display: inline-block：既可水平並排，又擁有完整的寬高自訂能力。',
+        'display: none vs visibility: hidden：前者連骨架一起拔除（不佔空間）；後者穿隱形披風（看不見但位置還在）。'
       ],
       badVsGood: {
         badCode: '/* 致命失誤：對 <a> 狂設寬高卻不起作用 */\na {\n  width: 150px;\n  height: 40px;\n}',
@@ -472,7 +490,20 @@ p {
       ],
       championTip: '製作按鈕時，如果直接在 <a> 標籤寫 padding 或寬高，千萬記得加上 display: inline-block，否則常常會壓到上下行文字造成災難！',
       commonPitfalls: [
-        '新手搞混 display: none（直接從排版樹拔除，不佔位）與 opacity: 0（只是透明，點擊依然觸發）。'
+        '新手搞混 display: none（直接從排版樹拔除，不佔位）與 opacity: 0（只是透明，點擊依然觸發）。',
+        '對 inline 元素設定 margin-top / margin-bottom 發現完全推不開，因為 inline 垂直外距不生效！'
+      ],
+      quickToggles: [
+        {
+          label: '🧱 display: block',
+          overrideCss: '.btn-group a { display: block; margin: 8px 0; background: #0284c7; color: white; padding: 12px; border-radius: 8px; text-decoration: none; }',
+          desc: '按鈕強制各自霸佔一整行'
+        },
+        {
+          label: '📦 display: inline-block',
+          overrideCss: '.btn-group a { display: inline-block; margin: 0 8px; background: #10b981; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; }',
+          desc: '按鈕並排在同一行，且享有自訂寬高與內距'
+        }
       ]
     },
     teacherCode: {
@@ -649,26 +680,28 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 6 模組：定位與圖層 (Position & z-index)
+  // 第 6 模組：定位與圖層 (Position & LearnLayout 錨點心法)
   // -------------------------------------------------------------
   {
     id: 'css-positioning-master',
-    title: 'CSS 定位神功：子絕父相與 z-index 圖層空間',
-    subtitle: '孫悟空逃不出如來佛手掌心：absolute 與 relative 的神聖羈絆',
+    title: 'position 家族大比拼：static 凡人、relative 幽靈與「子絕父相」',
+    subtitle: '致敬 LearnLayout：absolute 飛出銀河系的尋親冒險與 fixed 釘死視窗',
     category: 'display-position',
     categoryName: '第 6 模組：定位與版面佈局',
     difficulty: '進階',
+    fooishReferenceUrl: 'https://zh-tw.learnlayout.com/position.html',
     concept: {
       summary: '網頁默認依順序流動，但要做出「右上角特價徽章」、「固定頂部導航列」或「懸浮視窗」，就必須出動 position 五大武功秘笈。',
       metaphor: {
-        icon: '📍',
-        title: 'GPS 座標定位與孫悟空傳奇',
-        story: '• Relative（原地踏步）：自己雖然位移了，但原本站的坑位誰也不能搶！\n• Absolute（孫悟空）：跳出凡間漂浮在空中；但它需要一個長輩錨點！如果爸爸是 Relative，孫悟空就只能在爸爸肚子裡翻跟斗；如果長輩全都沒設，它就會直接以整個網頁為家！這就是傳說中的「子絕父相」！\n• Fixed（固定視窗）：直接釘在螢幕視窗上，滑鼠滾輪怎麼滾它都不動。\n• z-index（地圖海拔）：數字越大，圖層疊得越高越在上面！'
+        icon: '🧭',
+        title: '座標引力與 LearnLayout 尋親記',
+        story: '參考經典教學 LearnLayout (zh-tw.learnlayout.com/position.html)：\n• Static（凡夫俗子）：預設狀態，照常規排隊，top/left 與 z-index 對它完全無效。\n• Relative（幽靈分身）：肉身位移了，但原本佔據的坑位永遠保留給它！\n• Absolute（離家出走的少年）：徹底脫離文檔流，往上一路尋找「第一個 non-static 的長輩」當作定位錨點！如果父層、爺爺層都是 static，它會一路衝破天際以 <html> 視窗為錨點！這就是為什麼金手選手必須默念「子絕父相」！\n• Fixed（視窗釘子戶）：永遠釘死在螢幕視窗特定座標，滑鼠滾輪怎麼滾都甩不掉它！'
       },
       keyPoints: [
-        '「子絕父相」口訣：子元素設 position: absolute，父容器務必設 position: relative！',
+        '「子絕父相」心法：子元素設 position: absolute，父容器務必設 position: relative！',
         '四大方向座標：top、right、bottom、left，決定偏移距離。',
-        'z-index 唯有搭配定位（非 static）才會起效，預設為 auto。'
+        'z-index 唯有搭配定位（非 static）才會起效，預設為 auto。',
+        'fixed 與 absolute 都會使元素寬度收縮至內容大小，並脫離一般正常流動。'
       ],
       badVsGood: {
         badCode: '/* 慘劇：子元素設 absolute，父層卻忘記設 relative */\n.badge {\n  position: absolute;\n  top: 10px;\n  right: 10px;\n}',
@@ -684,7 +717,20 @@ p {
       ],
       championTip: '競賽切版「角標 Tag」、「關閉按鈕 X」幾乎 100% 使用子絕父相。記住：只要子層用了 absolute，眼睛反射動作就要回頭檢查父層有沒有加上 relative！',
       commonPitfalls: [
-        '初學者常以為 z-index 隨處可用，但若該元素是預設的 position: static，寫 z-index: 99999 也是完全不起作用的。'
+        '初學者常以為 z-index 隨處可用，但若該元素是預設的 position: static，寫 z-index: 99999 也是完全不起作用的。',
+        '忘記給父元素設 relative，導致 absolute 子元素直接以整個螢幕為基準定位。'
+      ],
+      quickToggles: [
+        {
+          label: '🌟 完美「子絕父相」釘選',
+          overrideCss: '.card-container { position: relative; background: #1e293b; padding: 24px; border-radius: 12px; border: 1px solid #334155; } .hot-badge { position: absolute; top: 12px; right: 12px; background: #f43f5e; color: white; padding: 4px 10px; border-radius: 99px; }',
+          desc: '子元素精準固定在卡片右上角'
+        },
+        {
+          label: '👻 父層未設 relative 翻車',
+          overrideCss: '.card-container { position: static; background: #1e293b; padding: 24px; border-radius: 12px; border: 1px solid #334155; } .hot-badge { position: absolute; top: 12px; right: 12px; background: #f43f5e; color: white; padding: 4px 10px; border-radius: 99px; }',
+          desc: '徽章脫離卡片飛向外太空'
+        }
       ]
     },
     teacherCode: {
@@ -771,30 +817,31 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 7 模組：Flexbox 彈性盒模型 (現代切版之王)
+  // 第 7 模組：Flexbox 彈性盒模型 (LearnLayout 現代排版王牌)
   // -------------------------------------------------------------
   {
     id: 'css-flexbox-superhero',
-    title: 'Flexbox 現代排版王牌：一維彈性佈局',
-    subtitle: '橫排直排隨心所欲，告別 float 浮動地獄時代',
+    title: 'Flexbox 一維彈性救世主：徹底告別 float 塌陷與垂直置中噩夢',
+    subtitle: '致敬 LearnLayout：一鍵 flex-direction、justify-content 與等高卡片奇蹟',
     category: 'flexbox',
     categoryName: '第 7 模組：Flexbox 與 Grid',
     difficulty: '進階',
+    fooishReferenceUrl: 'https://zh-tw.learnlayout.com/flexbox.html',
     concept: {
-      summary: '在過去，前端工程師為了把按鈕排成一排要算百分比算到崩潰；現在只要在父層宣告 display: flex，子元素瞬間自動乖乖並排立正站好！',
+      summary: '在 LearnLayout 誕生前，工程師為了垂直置中與多欄並排，不得不祭出 float、clearfix 與 table，算百分比算到崩潰；現在只要一行 display: flex，子元素瞬間自適應排隊！',
       metaphor: {
-        icon: '🤸',
-        title: '合唱團排隊魔術師',
-        story: '把父容器想成舞台指揮家（Flex Container），裡面的小孩是合唱團員（Flex Items）：\n• justify-content（指揮主軸）：大家要往中間擠 (center)？兩端貼緊 (space-between)？還是整齊散開？\n• align-items（指揮交叉軸）：高個子矮個子要頭頂齊平、腳底齊平還是肚臍置中？\n• gap（團員安全社交距離）：不用再算 margin-right，直接給全員均勻間距！'
+        icon: '⚡',
+        title: '舞台指揮家與彈簧合唱團 (LearnLayout 里程碑)',
+        story: '參考經典教學 LearnLayout (zh-tw.learnlayout.com/flexbox.html)：\n過去做多欄排版必須使用 float，但 float 會引發父容器高度縮減為 0 的「高度塌陷」，必須加 clearfix 才能收尾。現在 Flexbox 終結了一切痛點！\n把父容器想成舞台指揮家（Flex Container），裡面的小孩是合唱團員（Flex Items）：\n• justify-content（主軸方向分佈）：兩端貼緊 (space-between) 做導覽列？還是完美水平居中 (center)？\n• align-items（垂直交叉軸對齊）：全體等高拉伸 (stretch)？還是優雅垂直居中 (center)？\n• gap（無痛呼吸間隙）：不用再算 margin-right，直接給全員均勻間距！'
       },
       keyPoints: [
         '起手式：父層 display: flex，子層立刻自動橫向並排。',
-        '主軸分佈 justify-content：center、space-between (兩端對齊，做導航列最愛)。',
+        '主軸分佈 justify-content：center、space-between (兩端對齊，做導航列最愛)、space-around。',
         '交叉軸對齊 align-items：center (垂直置中神器！)。',
         '神聖屬性 gap：直接在父層宣告 gap: 16px，不再需要寫 :not(:last-child) 扣 margin！'
       ],
       badVsGood: {
-        badCode: '/* 上古時代浮動排版 (易破版且要清除浮動) */\n.col {\n  float: left;\n  width: 33.33%;\n  margin-right: 10px;\n}',
+        badCode: '/* 上古時代浮動排版 (易破版且要手動清除浮動) */\n.col {\n  float: left;\n  width: 33.33%;\n  margin-right: 10px;\n}',
         badReason: '需要手動 clearfix，父層高度坍塌，是新手被扣分的重災區。',
         goodCode: '/* 現代金手必備：Flexbox + gap */\n.row {\n  display: flex;\n  gap: 16px;\n  align-items: center;\n}',
         goodReason: '不坍塌、免清除浮動、自適應間距，十秒鐘搞定。'
@@ -802,13 +849,27 @@ p {
       mnemonic: '父層宣告 display: flex，justify 主軸 space-between，align 交叉垂直中，gap 間距最省心！',
       syntaxTable: [
         { property: 'display: flex', values: '-', explanation: '啟動彈性盒模型' },
-        { property: 'justify-content', values: 'flex-start | center | space-between', explanation: '主軸（預設水平）排列' },
+        { property: 'flex-direction', values: 'row | column', explanation: '控制主軸排列方向（橫向或垂直）' },
+        { property: 'justify-content', values: 'flex-start | center | space-between | space-around', explanation: '主軸（預設水平）排列' },
         { property: 'align-items', values: 'stretch | center | flex-start', explanation: '交叉軸（預設垂直）對齊' },
         { property: 'gap', values: '16px / 20px', explanation: '子元素間距（現代必學）' }
       ],
       championTip: '「如何讓一個未知寬高的元素在畫面水平垂直居中？」考官最愛問這題！標準答案秒殺：父層寫 display: flex; justify-content: center; align-items: center; 搞定！',
       commonPitfalls: [
-        '新手常把 justify-content 和 align-items 寫在子元素上，記住：決定排隊方式的是「父容器」！'
+        '新手常把 justify-content 和 align-items 寫在子元素上，記住：決定排隊方式的是「父容器」！',
+        '忘記 flex 容器預設 flex-direction 是 row，因此主軸是水平，align-items 才是垂直！'
+      ],
+      quickToggles: [
+        {
+          label: '⚡ space-between 兩端對齊',
+          overrideCss: '.navbar { display: flex; justify-content: space-between; align-items: center; background: #0f172a; padding: 16px 24px; border-radius: 10px; border: 1px solid #1e293b; }',
+          desc: 'Logo 與導覽連結分居兩端'
+        },
+        {
+          label: '🎯 center 全體置中',
+          overrideCss: '.navbar { display: flex; justify-content: center; align-items: center; gap: 32px; background: #0f172a; padding: 16px 24px; border-radius: 10px; border: 1px solid #1e293b; }',
+          desc: '全體元素集合在正中央'
+        }
       ]
     },
     teacherCode: {
@@ -1236,23 +1297,25 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 11 模組：現代 CSS 與響應式 RWD (Media Queries)
+  // 第 11 模組：現代 CSS 與響應式 RWD (LearnLayout 跨屏哲學)
   // -------------------------------------------------------------
   {
     id: 'css-responsive-media-queries',
-    title: '響應式網頁設計：Media Queries 跨屏自適應',
-    subtitle: '手機、平板、電腦全通吃，一套代碼走天下',
+    title: '響應式 RWD 跨屏變形記：像水一樣自適應手機、平板與桌機',
+    subtitle: '致敬 LearnLayout：max-width 流體容器、Media Queries 斷點與單多欄切換',
     category: 'competition',
     categoryName: '第 11 模組：現代 CSS 與響應式',
     difficulty: '進階',
+    fooishReferenceUrl: 'https://zh-tw.learnlayout.com/media-queries.html',
     concept: {
-      summary: '現代人 70% 用手機瀏覽網頁。利用 @media (max-width: 768px)，當螢幕變小時自動將橫排卡片疊成直排，字體自動微調。',
+      summary: '現代超過 70% 流量來自手機。利用 @media (max-width: 768px)，當螢幕變小時自動將橫排卡片疊成直排，不產生任何水平捲軸破版。',
       metaphor: {
         icon: '📱',
-        title: '水隨容器而變形',
-        story: '李小龍名言：「Be water, my friend. 水倒入茶杯就變成茶杯的形狀，倒入水壺就變成水壺的形狀。」響應式網頁就是像水一樣，在 27 吋電腦大螢幕展開為四欄並排；在 6 吋手機小螢幕上順暢折疊成單欄直排！'
+        title: '水隨容器而變形 (LearnLayout 經典流體哲學)',
+        story: '參考經典教學 LearnLayout (zh-tw.learnlayout.com/media-queries.html)：\n李小龍名言：「Be water, my friend. 水倒入茶杯就變成茶杯的形狀，倒入水壺就變成水壺的形狀。」\n在過去固定 960px 寬度的年代，網頁在手機上會縮成小螞蟻或橫向暴衝。響應式網頁結合了 max-width 與 @media 斷點：在 27 吋電腦大螢幕展開為多欄並排；在 6 吋手機小螢幕上順暢折疊成單欄直排！'
       },
       keyPoints: [
+        '流體第一步：以 max-width: 1200px; width: 100%; 取代寫死的 width: 1200px。',
         '斷點標準 (Breakpoints)：手機 ≤ 640px、平板 ≤ 768px、電腦 ≥ 1024px。',
         '語法：@media (max-width: 768px) { ... } 代表螢幕在 768px 以下時生效。',
         'Flex 轉向神器：在手機版將 flex-direction: column，立刻將橫排轉為直排！'
@@ -1266,11 +1329,25 @@ p {
       mnemonic: '媒體查詢斷點定，max-width 鎖手機，橫排切換 flex-column，任何螢幕都貼心！',
       syntaxTable: [
         { property: '@media (max-width: 768px)', values: '{ ... }', explanation: '平板與手機斷點規則' },
-        { property: 'flex-direction', values: 'row | column', explanation: '控制主軸方向（橫排改直排）' }
+        { property: 'flex-direction', values: 'row | column', explanation: '控制主軸方向（橫排改直排）' },
+        { property: 'max-width', values: '100% / 600px', explanation: '自適應最大寬度' }
       ],
       championTip: '競賽閱卷老師會直接把瀏覽器視窗拉大拉小測試。如果出現任何橫向滾動條（Horizontal Scrollbar），扣分非常重！',
       commonPitfalls: [
-        '新手忘記在 HTML <head> 加入 <meta name="viewport" content="width=device-width, initial-scale=1.0">，導致手機版直接縮成螞蟻小字。'
+        '新手忘記在 HTML <head> 加入 <meta name="viewport" content="width=device-width, initial-scale=1.0">，導致手機版直接縮成螞蟻小字。',
+        '在 media query 裡重複寫了整份 CSS，其實只要覆蓋改變的屬性即可（例如 flex-direction: column）！'
+      ],
+      quickToggles: [
+        {
+          label: '📱 模擬手機單欄直排',
+          overrideCss: '.responsive-box { display: flex; flex-direction: column; gap: 12px; background: #1e293b; padding: 16px; border-radius: 8px; } .column { background: #0284c7; color: white; padding: 16px; text-align: center; border-radius: 6px; }',
+          desc: '窄螢幕單欄垂直堆疊'
+        },
+        {
+          label: '💻 模擬桌機雙欄並排',
+          overrideCss: '.responsive-box { display: flex; flex-direction: row; gap: 16px; background: #1e293b; padding: 20px; border-radius: 8px; } .column { flex: 1; background: #334155; color: white; padding: 20px; text-align: center; border-radius: 6px; }',
+          desc: '寬螢幕雙欄自適應平分寬度'
+        }
       ]
     },
     teacherCode: {

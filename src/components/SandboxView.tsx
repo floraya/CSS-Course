@@ -306,8 +306,8 @@ export const SandboxView: React.FC = () => {
 
       {/* Grid: Left HTML/CSS Editors / Right Live Canvas */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Left Column: Editors (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
+        {/* Left Column: Editors (7 cols) */}
+        <div className="lg:col-span-7 space-y-4">
           {/* HTML Editor */}
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
             <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-300">
@@ -345,8 +345,8 @@ export const SandboxView: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Column: Live Sandbox Preview (6 cols) */}
-        <div className="lg:col-span-6 space-y-3">
+        {/* Right Column: Live Sandbox Preview (5 cols) */}
+        <div className="lg:col-span-5 space-y-3">
           <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
             {/* Toolbar */}
             <div className="px-4 py-2.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between gap-2">

@@ -25,6 +25,7 @@ interface StudentLearningViewProps {
   lesson: Lesson;
   progress: UserProgress;
   onSaveProgress: (lessonId: string, customCss: string, passed: boolean) => void;
+  onUpdateDraftCss?: (lessonId: string, customCss: string) => void;
   onNextLesson?: () => void;
   onSwitchToTeacher: () => void;
   currentIndex: number;
@@ -35,14 +36,21 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
   lesson,
   progress,
   onSaveProgress,
+  onUpdateDraftCss,
   onNextLesson,
   onSwitchToTeacher,
   currentIndex,
   totalLessons,
 }) => {
-  // 學生學習時預設皆為空白，讓學生自己填寫
-  const savedCss = progress.savedCustomCss[lesson.id];
-  const [cssCode, setCssCode] = useState<string>(savedCss !== undefined ? savedCss : '');
+  // 學生學習時：未寫過的新單元預設為空白；有自填草稿或已通關才載入
+  const isCompleted = progress.completedLessonIds.includes(lesson.id);
+  const rawSaved = progress.savedCustomCss[lesson.id];
+  const isStarterOrTeacherLeak = !isCompleted && (
+    rawSaved === lesson.challenge.starterCss ||
+    rawSaved === lesson.teacherCode.css
+  );
+  const initialCss = (rawSaved !== undefined && !isStarterOrTeacherLeak) ? rawSaved : '';
+  const [cssCode, setCssCode] = useState<string>(initialCss);
   const [activeTab, setActiveTab] = useState<'css' | 'html'>('css');
   const [showHint, setShowHint] = useState<boolean>(false);
   const [showAnswer, setShowAnswer] = useState<boolean>(false);
@@ -59,19 +67,24 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
 
   // 切換單元時：如果是新單元，預設清空讓學生填寫；若有已存檔的自填程式碼則載入
   useEffect(() => {
-    const loaded = progress.savedCustomCss[lesson.id];
-    const initialCss = loaded !== undefined ? loaded : '';
-    setCssCode(initialCss);
+    const rawLoaded = progress.savedCustomCss[lesson.id];
+    const isUnitCompleted = progress.completedLessonIds.includes(lesson.id);
+    const isLeak = !isUnitCompleted && (
+      rawLoaded === lesson.challenge.starterCss ||
+      rawLoaded === lesson.teacherCode.css
+    );
+    const loadedCss = (rawLoaded !== undefined && !isLeak) ? rawLoaded : '';
+    setCssCode(loadedCss);
     setHasValidated(false);
 
     // 檢查是否有實質程式碼（排除空白與註解）
-    const clean = initialCss.replace(/\/\*[\s\S]*?\*\//g, '').trim();
-    const actuallyPassed = clean.length > 0 && progress.completedLessonIds.includes(lesson.id);
+    const clean = loadedCss.replace(/\/\*[\s\S]*?\*\//g, '').trim();
+    const actuallyPassed = clean.length > 0 && isUnitCompleted;
     setIsPassed(actuallyPassed);
 
     // 若根本沒寫程式碼，卻在 completedLessonIds 內，及時校正清除
-    if (!actuallyPassed && progress.completedLessonIds.includes(lesson.id)) {
-      onSaveProgress(lesson.id, initialCss, false);
+    if (!actuallyPassed && isUnitCompleted) {
+      onSaveProgress(lesson.id, loadedCss, false);
     }
 
     setCheckResults([]);
@@ -132,6 +145,7 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
     setShowAnswer(false);
     setHasValidated(false);
     setEmptyWarning(false);
+    onUpdateDraftCss?.(lesson.id, lesson.challenge.solutionCss);
   };
 
   const isCapstone = lesson.id === 'css-capstone-landing-page';
@@ -274,8 +288,8 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
 
       {/* 雙欄：左邊空白自行撰寫，右邊即時看成果 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* 左欄：純淨編輯器 (6 cols) */}
-        <div className="lg:col-span-6 space-y-3">
+        {/* 左欄：純淨編輯器 (7 cols) */}
+        <div className="lg:col-span-7 space-y-3">
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm flex flex-col">
             <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
               <div className="flex gap-2">
@@ -319,6 +333,7 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
                     setCssCode(val);
                     setHasValidated(false);
                     if (emptyWarning) setEmptyWarning(false);
+                    onUpdateDraftCss?.(lesson.id, val);
                     const clean = val.replace(/\/\*[\s\S]*?\*\//g, '').trim();
                     if (!clean && isPassed) {
                       setIsPassed(false);
@@ -425,8 +440,8 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
           </div>
         </div>
 
-        {/* 右欄：即時畫布 (6 cols) */}
-        <div className="lg:col-span-6 space-y-3">
+        {/* 右欄：即時畫布 (5 cols) */}
+        <div className="lg:col-span-5 space-y-3">
           <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-sm">
             <div className="px-4 py-2.5 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-300">
               <div className="flex items-center gap-1.5 text-sky-400">
