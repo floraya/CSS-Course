@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="50%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#4f46e5" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#818cf8" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.5" />
+    </filter>
+  </defs>
+
+  <!-- Squircle / Rounded App Icon Base -->
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#bgGrad)" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.4" />
+
+  <!-- Inner subtle glow frame -->
+  <rect x="5" y="5" width="54" height="54" rx="13" fill="none" stroke="white" stroke-width="0.8" stroke-opacity="0.2" />
+
+  <!-- CSS 3 Shield Symbol & Braces -->
+  <g filter="url(#shadow)">
+    <!-- CSS Shield Crest -->
+    <path d="M16 14 L48 14 L44.8 44 L32 49 L19.2 44 Z" fill="#0f172a" fill-opacity="0.5" />
+    <path d="M18 16 L46 16 L43.2 42.5 L32 46.8 L20.8 42.5 Z" fill="#0f172a" fill-opacity="0.85" />
+    <path d="M32 18 L44 18 L41.8 40.8 L32 44.5 Z" fill="white" fill-opacity="0.08" />
+
+    <!-- Curly Braces { } in Center -->
+    <!-- Left Brace { -->
+    <path d="M26 23 C23.5 23 23 24 23 26.5 L23 28.5 C23 30.5 21.5 31.5 20 32 C21.5 32.5 23 33.5 23 35.5 L23 37.5 C23 40 23.5 41 26 41" 
+          fill="none" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Right Brace } -->
+    <path d="M38 23 C40.5 23 41 24 41 26.5 L41 28.5 C41 30.5 42.5 31.5 44 32 C42.5 32.5 41 33.5 41 35.5 L41 37.5 C41 40 40.5 41 38 41" 
+          fill="none" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+
+    <!-- Center Slash / Core Dot / Star -->
+    <circle cx="32" cy="32" r="2.2" fill="#38bdf8" />
+  </g>
+</svg>
