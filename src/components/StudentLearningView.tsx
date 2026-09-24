@@ -347,9 +347,12 @@ export const StudentLearningView: React.FC<StudentLearningViewProps> = ({
                   height="340px"
                 />
               ) : (
-                <div className="bg-[#1e1e1e] border border-[#333333] rounded-xl p-3 h-[340px] overflow-y-auto font-mono text-xs text-slate-300 whitespace-pre leading-relaxed select-text">
-                  {lesson.challenge.starterHtml}
-                </div>
+                <VsCodeEditor
+                  value={lesson.challenge.starterHtml}
+                  language="html"
+                  readOnly={true}
+                  height="340px"
+                />
               )}
             </div>
           </div>

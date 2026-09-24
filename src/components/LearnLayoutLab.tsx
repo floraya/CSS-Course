@@ -16,6 +16,7 @@ import {
   X,
   ExternalLink
 } from 'lucide-react';
+import { highlightCode } from '../utils/codeHighlighter';
 
 export type LabExperimentType = 
   | 'display' 
@@ -862,13 +863,10 @@ export const LearnLayoutLab: React.FC<LearnLayoutLabProps> = ({
               {/* 經典 Clearfix 語法展示 */}
               <div className="mt-4 p-3 bg-slate-950 rounded-lg border border-slate-800 text-xs font-mono text-slate-300">
                 <span className="text-sky-400 font-bold font-sans">經典 Micro Clearfix 魔法公式：</span>
-                <pre className="mt-1 text-slate-400">
-{`.clearfix::after {
-  content: "";
-  display: table;
-  clear: both;
-}`}
-                </pre>
+                <pre 
+                  className="vscode-highlight mt-1 text-slate-300"
+                  dangerouslySetInnerHTML={{ __html: highlightCode(`.clearfix::after {\n  content: "";\n  display: table;\n  clear: both;\n}`, 'css') }}
+                />
               </div>
             </div>
           </div>

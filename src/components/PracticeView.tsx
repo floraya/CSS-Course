@@ -22,6 +22,7 @@ import {
 import { Lesson, UserProgress } from '../types';
 import { validateChallenge, CheckResult } from '../utils/codeValidator';
 import { BoxModelInspector } from './BoxModelInspector';
+import { VsCodeEditor } from './VsCodeEditor';
 
 interface PracticeViewProps {
   lesson: Lesson;
@@ -267,30 +268,27 @@ export const PracticeView: React.FC<PracticeViewProps> = ({
               </div>
             </div>
 
-            {/* Code Input Area */}
-            <div className="relative bg-slate-950 font-mono text-xs text-slate-200 p-3 h-[420px] overflow-hidden flex flex-col">
+            {/* Code Input Area with VS Code Highlighting */}
+            <div className="p-2 bg-slate-950">
               {activeEditorTab === 'css' ? (
-                <textarea
+                <VsCodeEditor
                   value={cssCode}
-                  onChange={(e) => {
-                    setCssCode(e.target.value);
+                  onChange={(val) => {
+                    setCssCode(val);
                     setHasValidated(false);
                   }}
-                  spellCheck={false}
-                  className="w-full flex-1 bg-transparent text-slate-200 resize-none font-mono text-xs leading-relaxed focus:outline-none focus:ring-0 border-0 p-2 selection:bg-sky-500/30"
-                  placeholder="在此撰寫 CSS 樣式..."
+                  language="css"
+                  placeholder="/* 在此撰寫 CSS 樣式... */"
+                  height="400px"
                 />
               ) : (
-                <div className="w-full flex-1 overflow-y-auto p-2 text-slate-400 select-text whitespace-pre leading-relaxed text-xs">
-                  {lesson.challenge.starterHtml}
-                </div>
+                <VsCodeEditor
+                  value={lesson.challenge.starterHtml}
+                  language="html"
+                  readOnly={true}
+                  height="400px"
+                />
               )}
-
-              {/* Status bar inside editor */}
-              <div className="pt-2 border-t border-slate-900 flex justify-between items-center text-[10px] text-slate-500 font-mono">
-                <span>CSS 3.0 • UTF-8</span>
-                <span>行數：{cssCode.split('\n').length} 行</span>
-              </div>
             </div>
           </div>
 

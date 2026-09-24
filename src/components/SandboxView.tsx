@@ -12,6 +12,7 @@ import {
   Code2,
   Play
 } from 'lucide-react';
+import { VsCodeEditor } from './VsCodeEditor';
 
 const PRESETS = [
   {
@@ -308,41 +309,23 @@ export const SandboxView: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Left Column: Editors (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
-          {/* HTML Editor */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-            <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5 text-sky-400" />
-                HTML 結構
-              </span>
-              <span className="text-[10px] text-slate-500 font-mono">&lt;body&gt;</span>
-            </div>
-            <textarea
-              value={htmlCode}
-              onChange={(e) => setHtmlCode(e.target.value)}
-              spellCheck={false}
-              className="w-full h-44 bg-slate-950/80 p-3 font-mono text-xs text-sky-200 resize-none focus:outline-none border-0 leading-relaxed"
-              placeholder="輸入 HTML..."
-            />
-          </div>
+          {/* HTML Editor with VS Code Syntax Highlighting */}
+          <VsCodeEditor
+            value={htmlCode}
+            onChange={setHtmlCode}
+            language="html"
+            placeholder="<!-- 在此輸入 HTML 結構 -->"
+            height="180px"
+          />
 
-          {/* CSS Editor */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-sm">
-            <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <Code2 className="w-3.5 h-3.5 text-purple-400" />
-                CSS 樣式表
-              </span>
-              <span className="text-[10px] text-slate-500 font-mono">&lt;style&gt;</span>
-            </div>
-            <textarea
-              value={cssCode}
-              onChange={(e) => setCssCode(e.target.value)}
-              spellCheck={false}
-              className="w-full h-80 bg-slate-950/80 p-3 font-mono text-xs text-purple-200 resize-none focus:outline-none border-0 leading-relaxed"
-              placeholder="輸入 CSS 樣式..."
-            />
-          </div>
+          {/* CSS Editor with VS Code Syntax Highlighting */}
+          <VsCodeEditor
+            value={cssCode}
+            onChange={setCssCode}
+            language="css"
+            placeholder="/* 在此輸入 CSS 樣式... */"
+            height="300px"
+          />
         </div>
 
         {/* Right Column: Live Sandbox Preview (5 cols) */}

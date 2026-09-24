@@ -3,6 +3,7 @@ import { Play, ArrowRight, Copy, Check, RotateCcw, Maximize2, Sparkles } from 'l
 import { Lesson } from '../types';
 import { InteractiveConceptCard } from './InteractiveConceptCard';
 import { FullPagePreviewModal } from './FullPagePreviewModal';
+import { VsCodeEditor } from './VsCodeEditor';
 
 interface TeacherTeachingViewProps {
   lesson: Lesson;
@@ -207,7 +208,7 @@ export const TeacherTeachingView: React.FC<TeacherTeachingViewProps> = ({
           </div>
 
           {/* 老師示範程式碼 */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg">
             <div className="px-4 py-2 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
               <div className="flex gap-2">
                 <button
@@ -232,18 +233,17 @@ export const TeacherTeachingView: React.FC<TeacherTeachingViewProps> = ({
                 </button>
               </div>
 
-              <button
-                onClick={handleCopy}
-                className="flex items-center gap-1 text-xs text-slate-400 hover:text-white px-2 py-1 rounded hover:bg-slate-800 transition-colors"
-              >
-                {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                <span>{copied ? '已複製' : '複製代碼'}</span>
-              </button>
+              <span className="text-[11px] text-slate-500">
+                {codeTab === 'css' ? '老師示範樣式' : '結構骨架'}
+              </span>
             </div>
 
-            <div className="p-4 bg-slate-950/80 max-h-56 overflow-y-auto font-mono text-xs text-slate-200 whitespace-pre leading-relaxed">
-              {codeTab === 'css' ? lesson.teacherCode.css : lesson.teacherCode.html}
-            </div>
+            <VsCodeEditor
+              value={codeTab === 'css' ? activeCss : lesson.teacherCode.html}
+              language={codeTab}
+              readOnly={true}
+              height="230px"
+            />
           </div>
 
           {/* 底部快速切換按鈕 */}

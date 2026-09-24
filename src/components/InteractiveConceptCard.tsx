@@ -3,6 +3,7 @@ import { Sparkles, AlertTriangle, Lightbulb, Check, X, Code2, Zap, Trophy, HelpC
 import { Lesson } from '../types';
 import { ConceptDiagram } from './ConceptDiagram';
 import { LearnLayoutLab, LabExperimentType } from './LearnLayoutLab';
+import { highlightCode } from '../utils/codeHighlighter';
 
 interface InteractiveConceptCardProps {
   lesson: Lesson;
@@ -279,9 +280,10 @@ export const InteractiveConceptCard: React.FC<InteractiveConceptCardProps> = ({
                   </button>
                 </div>
 
-                <div className="bg-[#1e1e1e] p-3 rounded-lg font-mono text-xs text-rose-200 border border-rose-900/50 whitespace-pre overflow-x-auto leading-relaxed">
-                  {concept.badVsGood.badCode}
-                </div>
+                <pre 
+                  className="vscode-highlight bg-[#1e1e1e] p-3 rounded-lg font-mono text-xs border border-rose-900/50 whitespace-pre overflow-x-auto leading-relaxed shadow-inner"
+                  dangerouslySetInnerHTML={{ __html: highlightCode(concept.badVsGood.badCode, 'css') }}
+                />
 
                 <div className="text-xs text-slate-300 leading-relaxed bg-slate-900/80 p-3 rounded-lg border border-slate-800">
                   <span className="text-rose-400 font-bold">為什麼會翻車？</span>
@@ -304,9 +306,10 @@ export const InteractiveConceptCard: React.FC<InteractiveConceptCardProps> = ({
                   </button>
                 </div>
 
-                <div className="bg-[#1e1e1e] p-3 rounded-lg font-mono text-xs text-emerald-200 border border-emerald-900/50 whitespace-pre overflow-x-auto leading-relaxed">
-                  {concept.badVsGood.goodCode}
-                </div>
+                <pre 
+                  className="vscode-highlight bg-[#1e1e1e] p-3 rounded-lg font-mono text-xs border border-emerald-900/50 whitespace-pre overflow-x-auto leading-relaxed shadow-inner"
+                  dangerouslySetInnerHTML={{ __html: highlightCode(concept.badVsGood.goodCode, 'css') }}
+                />
 
                 <div className="text-xs text-slate-300 leading-relaxed bg-slate-900/80 p-3 rounded-lg border border-slate-800">
                   <span className="text-emerald-400 font-bold">為什麼這樣寫能得滿分？</span>

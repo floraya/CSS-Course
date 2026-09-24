@@ -48,3 +48,99 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+/* ==========================================================================
+   VS Code Dark+ Syntax Highlighting Theme
+   ========================================================================== */
+.vscode-highlight {
+  color: #d4d4d4;
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+/* Comments */
+.vscode-highlight .token.comment,
+.vscode-highlight .token.prolog,
+.vscode-highlight .token.doctype,
+.vscode-highlight .token.cdata {
+  color: #6a9955 !important;
+  font-style: italic;
+}
+
+/* Punctuation (colons, semicolons, commas) */
+.vscode-highlight .token.punctuation {
+  color: #d4d4d4;
+}
+
+/* Gold Brackets { } */
+.vscode-highlight .token.bracket-gold,
+.vscode-highlight .bracket-gold {
+  color: #ffd700 !important;
+  font-weight: 600;
+}
+
+/* CSS Selectors (classes, ids, elements, pseudo-classes) */
+.vscode-highlight .token.selector {
+  color: #d7ba7d !important;
+}
+
+/* CSS Properties & HTML Attribute Names */
+.vscode-highlight .token.property,
+.vscode-highlight .token.attr-name {
+  color: #9cdcfe !important;
+}
+
+/* HTML Tags (<div, <span, <h1, </p>) */
+.vscode-highlight .token.tag,
+.vscode-highlight .token.tag .token.tag-id {
+  color: #569cd6 !important;
+}
+
+.vscode-highlight .token.tag .token.punctuation {
+  color: #808080 !important;
+}
+
+/* Numbers & Units (20px, 100%, 1.5rem, 0) */
+.vscode-highlight .token.number,
+.vscode-highlight .token.unit,
+.vscode-highlight .token.unit-number {
+  color: #b5cea8 !important;
+}
+
+/* Strings & Attribute Values ("container", 'Arial') */
+.vscode-highlight .token.string,
+.vscode-highlight .token.char,
+.vscode-highlight .token.attr-value {
+  color: #ce9178 !important;
+}
+
+/* Functions (rgb(), calc(), var(), url()) */
+.vscode-highlight .token.function,
+.vscode-highlight .token.css-function {
+  color: #dcdcaa !important;
+}
+
+/* CSS Keywords & Values (flex, block, none, relative, absolute, etc.) */
+.vscode-highlight .token.keyword,
+.vscode-highlight .token.css-keyword,
+.vscode-highlight .token.boolean {
+  color: #ce9178 !important;
+}
+
+/* At-rules (@media, @keyframes) & Important */
+.vscode-highlight .token.atrule,
+.vscode-highlight .token.important {
+  color: #c586c0 !important;
+  font-weight: 600;
+}
+
+/* Color hex codes (#ff0000) */
+.vscode-highlight .token.color-hex {
+  color: #ce9178 !important;
+}
+
+/* Textarea placeholder styling for VS Code editor overlay */
+.vscode-editor-textarea::placeholder {
+  color: #6e7681 !important;
+  -webkit-text-fill-color: #6e7681 !important;
+}
+
