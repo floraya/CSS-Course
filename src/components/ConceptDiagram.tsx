@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Layers, ArrowRight, ShieldAlert, Sparkles, Scale, Maximize2, Compass, Move, Columns, Grid as GridIcon, Sun, Activity, Smartphone, RotateCw } from 'lucide-react';
+import { Layers, ArrowRight, ShieldAlert, Sparkles, Scale, Maximize2, Compass, Move, Columns, Grid as GridIcon, Sun, Activity, Smartphone, RotateCw, Palette } from 'lucide-react';
 
 interface ConceptDiagramProps {
   lessonId: string;
@@ -13,6 +13,7 @@ export const ConceptDiagram: React.FC<ConceptDiagramProps> = ({ lessonId }) => {
   const [flexJustify, setFlexJustify] = useState<'flex-start' | 'center' | 'space-between'>('space-between');
   const [rwdMode, setRwdMode] = useState<'desktop' | 'mobile'>('desktop');
   const [displayModeTab, setDisplayModeTab] = useState<'block' | 'inline' | 'inline-block'>('block');
+  const [customPropTheme, setCustomPropTheme] = useState<'cyan' | 'emerald' | 'amber' | 'rose'>('cyan');
 
   switch (lessonId) {
     // ----------------------------------------------------------------
@@ -944,7 +945,191 @@ export const ConceptDiagram: React.FC<ConceptDiagramProps> = ({ lessonId }) => {
       );
 
     // ----------------------------------------------------------------
-    // 12. 純 CSS Spinner 摩天輪運作拆解圖
+    // 12. CSS 自訂屬性 (Custom Properties & var()) 動態廣播心智圖
+    // ----------------------------------------------------------------
+    case 'css-custom-properties': {
+      const themes = {
+        cyan: {
+          name: '科技冰藍',
+          primary: '#38bdf8',
+          bg: '#0f172a',
+          cardBg: '#1e293b',
+          radius: '12px',
+          glow: 'rgba(56, 189, 248, 0.25)',
+        },
+        emerald: {
+          name: '薄荷翡翠',
+          primary: '#10b981',
+          bg: '#022c22',
+          cardBg: '#064e3b',
+          radius: '8px',
+          glow: 'rgba(16, 185, 129, 0.25)',
+        },
+        amber: {
+          name: '陽光琥珀',
+          primary: '#f59e0b',
+          bg: '#1c1917',
+          cardBg: '#292524',
+          radius: '16px',
+          glow: 'rgba(245, 158, 11, 0.25)',
+        },
+        rose: {
+          name: '霓虹粉紫',
+          primary: '#ec4899',
+          bg: '#2e0821',
+          cardBg: '#4a0432',
+          radius: '20px',
+          glow: 'rgba(236, 72, 153, 0.25)',
+        },
+      };
+
+      const currentTheme = themes[customPropTheme];
+
+      return (
+        <div className="space-y-4">
+          <div className="bg-slate-950/80 border border-sky-500/30 rounded-xl p-4 sm:p-5 relative overflow-hidden">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+              <span className="text-xs font-bold text-sky-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5" />
+                <span>:root 廣播站與 var() 接收器動態原理 (CSS Variables)</span>
+              </span>
+              <span className="text-[11px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+                點擊下方即時切換主題
+              </span>
+            </div>
+
+            {/* 即時切換主題廣播器按鈕列 */}
+            <div className="flex flex-wrap gap-2 mb-4 p-2 bg-slate-900/90 rounded-lg border border-slate-800">
+              <span className="text-xs text-slate-400 flex items-center gap-1 mr-1">
+                📡 廣播發射器:
+              </span>
+              {(['cyan', 'emerald', 'amber', 'rose'] as const).map((key) => {
+                const t = themes[key];
+                const active = customPropTheme === key;
+                return (
+                  <button
+                    key={key}
+                    type="button"
+                    onClick={() => setCustomPropTheme(key)}
+                    className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all flex items-center gap-1.5 ${
+                      active
+                        ? 'bg-sky-500 text-slate-950 font-bold shadow-md shadow-sky-500/20 ring-1 ring-sky-300'
+                        : 'bg-slate-800/80 text-slate-300 hover:bg-slate-700 hover:text-white'
+                    }`}
+                  >
+                    <span
+                      className="w-2.5 h-2.5 rounded-full border border-white/30"
+                      style={{ backgroundColor: t.primary }}
+                    />
+                    <span>{t.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* 左右對比：左側 CSS 變數定義，右側即時渲染效果 */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-3 text-xs">
+              {/* 左側：變數廣播台代碼 */}
+              <div className="md:col-span-6 bg-slate-900/90 p-3 rounded-lg border border-slate-800 font-mono space-y-2">
+                <div className="text-[11px] text-slate-400 font-sans font-bold flex items-center justify-between pb-1 border-b border-slate-800">
+                  <span>1. 根節點全域宣告 (:root)</span>
+                  <span className="text-sky-400 font-mono">DRY 核心</span>
+                </div>
+                <div className="text-slate-300 text-[11px] leading-relaxed">
+                  <span className="text-amber-300">:root</span> {'{\n'}
+                  {'  '}<span className="text-sky-300">--primary</span>:{' '}
+                  <span className="text-emerald-300 font-bold">{currentTheme.primary}</span>;{'\n'}
+                  {'  '}<span className="text-sky-300">--card-bg</span>:{' '}
+                  <span className="text-emerald-300 font-bold">{currentTheme.cardBg}</span>;{'\n'}
+                  {'  '}<span className="text-sky-300">--radius</span>:{' '}
+                  <span className="text-emerald-300 font-bold">{currentTheme.radius}</span>;{'\n'}
+                  {'}'}
+                </div>
+
+                <div className="text-[11px] text-slate-400 font-sans font-bold flex items-center justify-between pt-2 pb-1 border-b border-slate-800">
+                  <span>2. 子元件接收器 (var())</span>
+                  <span className="text-emerald-400 font-mono">自動繼承</span>
+                </div>
+                <div className="text-slate-300 text-[11px] leading-relaxed">
+                  <span className="text-amber-300">.product-card</span> {'{\n'}
+                  {'  '}<span className="text-sky-300">background</span>: <span className="text-yellow-300">var</span>(<span className="text-sky-300">--card-bg</span>);{'\n'}
+                  {'  '}<span className="text-sky-300">border</span>: 2px solid <span className="text-yellow-300">var</span>(<span className="text-sky-300">--primary</span>);{'\n'}
+                  {'  '}<span className="text-sky-300">border-radius</span>: <span className="text-yellow-300">var</span>(<span className="text-sky-300">--radius</span>);{'\n'}
+                  {'}'}
+                </div>
+              </div>
+
+              {/* 右側：即時渲染卡片視覺元件 */}
+              <div className="md:col-span-6 bg-slate-900/60 p-3 rounded-lg border border-slate-800 flex flex-col justify-center">
+                <div className="text-[11px] text-slate-400 mb-2 font-sans font-bold flex items-center justify-between">
+                  <span>3. 瀏覽器實時渲染畫面</span>
+                  <span className="text-xs text-sky-400 font-mono">Live Preview</span>
+                </div>
+
+                {/* 動態渲染卡片 */}
+                <div
+                  className="p-4 transition-all duration-300 text-center shadow-lg relative"
+                  style={{
+                    backgroundColor: currentTheme.cardBg,
+                    borderColor: currentTheme.primary,
+                    borderWidth: '2px',
+                    borderStyle: 'solid',
+                    borderRadius: currentTheme.radius,
+                    boxShadow: `0 8px 24px ${currentTheme.glow}`,
+                  }}
+                >
+                  <div className="flex items-center justify-between mb-2">
+                    <span
+                      className="px-2 py-0.5 rounded text-[10px] font-bold uppercase transition-colors"
+                      style={{
+                        backgroundColor: currentTheme.primary,
+                        color: currentTheme.bg,
+                      }}
+                    >
+                      var(--primary)
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      r: {currentTheme.radius}
+                    </span>
+                  </div>
+
+                  <h4 className="text-white font-bold text-sm tracking-tight mb-1">
+                    CSS 變數主題展示卡
+                  </h4>
+                  <p className="text-slate-300 text-[11px] mb-3">
+                    改變 :root 裡的一個色碼，全站數十個元件同步變色！
+                  </p>
+
+                  <button
+                    type="button"
+                    className="w-full py-1.5 px-3 rounded text-xs font-bold transition-all"
+                    style={{
+                      backgroundColor: currentTheme.primary,
+                      color: currentTheme.bg,
+                      borderRadius: currentTheme.radius,
+                    }}
+                  >
+                    立即購買 • 一鍵變身
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-3 p-2.5 rounded bg-slate-900 border border-slate-800 text-xs text-slate-300 flex items-center justify-between">
+              <div>
+                <span className="text-sky-400 font-bold">金手獎秒殺心法：</span>
+                <span className="ml-1 text-slate-300">
+                  雙橫線 <code className="text-sky-300 font-mono">--var</code> 定義變數，<code className="text-yellow-300 font-mono">var(--var)</code> 取值；支援全域廣播與局部覆寫！
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ----------------------------------------------------------------
+    // 13. 純 CSS Spinner 摩天輪運作拆解圖
     // ----------------------------------------------------------------
     case 'css-competition-final':
     default:

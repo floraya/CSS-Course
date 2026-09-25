@@ -1420,14 +1420,409 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 12 模組：金手獎實戰題庫 (Spinner、卡片與終極置中)
+  // 第 12 模組：CSS 自訂屬性 (Custom Properties & var())
+  // -------------------------------------------------------------
+  {
+    id: 'css-custom-properties',
+    title: 'CSS 自訂屬性 (Custom Properties)：打造主題變數與全域設計系統',
+    subtitle: '告別寫死色碼與複製貼上，用 :root { --變數 } 與 var() 實現主題切換與 DRY 規範',
+    category: 'competition',
+    categoryName: '第 12 模組：CSS 自訂屬性與主題設計系統',
+    difficulty: '進階',
+    fooishReferenceUrl: 'https://developer.mozilla.org/zh-TW/docs/Web/CSS/Using_CSS_custom_properties',
+    concept: {
+      summary: 'CSS 自訂屬性（俗稱 CSS 變數）允許在 :root 或特定選擇器定義以「--」開頭的命名數值，並用 var() 靈活調用。它具備動態繼承、作用域層疊與即時換膚能力，是現代前端設計系統的核心！',
+      metaphor: {
+        icon: '🎨',
+        title: '廣播電台與全校換制服廣播',
+        story: '想像學校有 2,000 名學生。如果不使用變數，當校長說「我們要把全校制服顏色換成亮橘色」，老師得跑到 2,000 個學生的衣櫃手動塗改；而 CSS 變數就像在廣播總機 (:root) 宣告「今日代表色 --primary: #f97316;」，學生衣服只需寫「顏色跟隨廣播 color: var(--primary);」。只要在廣播室改一行，全校 2,000 件衣服一秒同步換色！'
+      },
+      keyPoints: [
+        '宣告語法：名稱必須以雙破折號開頭（如 --primary-color: #38bdf8;），英文大小寫敏感。',
+        '作用域 (Scope)：宣告在 :root (根選擇器) 為全域變數；宣告在特定 class 內則為局部變數。',
+        '調用語法：使用 var(--變數名稱)，亦可給予備用值 var(--color, #fff) 防止未定義時樣式失效。',
+        '主題切換：只需要在深色模式 class 裡覆寫 --變數 值，子層元件無需重寫任何選擇器屬性規則！'
+      ],
+      badVsGood: {
+        badCode: `/* ❌ 到處寫死固定色碼與數值 (維護地獄) */
+.navbar { background: #0f172a; border-bottom: 2px solid #38bdf8; }
+.btn-primary { background: #38bdf8; color: #ffffff; }
+.card-title { color: #38bdf8; }
+.footer { background: #0f172a; border-top: 1px solid #38bdf8; }`,
+        badReason: '違背軟體工程 DRY (Don\'t Repeat Yourself) 原則，改版時極易漏改，且無法動態切換暗黑主題。',
+        goodCode: `/* ✅ 宣告在 :root 統一管理全域主題 */
+:root {
+  --primary: #38bdf8;
+  --bg-main: #0f172a;
+  --radius-sm: 8px;
+}
+.navbar { background: var(--bg-main); border-bottom: 2px solid var(--primary); }
+.btn-primary { background: var(--primary); border-radius: var(--radius-sm); }
+.card-title { color: var(--primary); }`,
+        goodReason: '一處修改全站同步響應，輕鬆達成主題抽換、設計系統規範與層疊覆寫！'
+      },
+      mnemonic: '雙橫線定義放根部，var() 包裹調出來；改動一人動全軍，主題換色秒速成！',
+      syntaxTable: [
+        { property: '--變數名: 值;', values: ':root { --brand: #38bdf8; }', explanation: '在根層或元素定義自訂屬性' },
+        { property: 'var(--變數名)', values: 'color: var(--brand);', explanation: '調用指定變數值' },
+        { property: 'var(--變數名, 後備值)', values: 'padding: var(--gap, 16px);', explanation: '當變數不存在時採用的安全備用值' }
+      ],
+      championTip: '遇到考題或面試要求實作「一鍵切換深色/淺色主題」，千萬不要為 .dark 複製一份重複的 .dark .card { ... }。只要在 [data-theme="dark"] 重新賦值 --bg 與 --text，子層完全不用動，代碼量少又優雅！',
+      commonPitfalls: [
+        '變數名稱區分大小寫：--main-color 與 --Main-Color 是完全不同的兩個變數！',
+        '變數名稱不可包含空格或特殊符號，只能包含英文字母、數字、連字號 - 與底線 _。',
+        '無法在屬性名稱本身使用 var()（例如 var(--prop): 10px; 是違法無效的語法）。'
+      ],
+      quickToggles: [
+        {
+          label: '💎 科技冰藍',
+          desc: '預設科技風深藍主題',
+          overrideCss: `:root {
+  --theme-primary: #38bdf8;
+  --theme-bg: #0f172a;
+  --theme-card: #1e293b;
+  --theme-radius: 12px;
+}`
+        },
+        {
+          label: '🌲 薄荷翡翠',
+          desc: '清新自然的翡翠綠主題',
+          overrideCss: `:root {
+  --theme-primary: #10b981;
+  --theme-bg: #022c22;
+  --theme-card: #064e3b;
+  --theme-radius: 8px;
+}`
+        },
+        {
+          label: '☀️ 陽光琥珀',
+          desc: '溫暖典雅的琥珀橘主題',
+          overrideCss: `:root {
+  --theme-primary: #f59e0b;
+  --theme-bg: #1c1917;
+  --theme-card: #292524;
+  --theme-radius: 16px;
+}`
+        },
+        {
+          label: '🌸 霓虹粉紫',
+          desc: '前衛潮流的粉紫主題',
+          overrideCss: `:root {
+  --theme-primary: #ec4899;
+  --theme-bg: #2e0821;
+  --theme-card: #4a0432;
+  --theme-radius: 20px;
+}`
+        }
+      ]
+    },
+    teacherCode: {
+      explanation: '老師示範：在 :root 中定義品牌主色、背景色與圓角半徑，並示範「全域繼承」與「局部 .card.vip 變數覆寫」。',
+      html: `<div class="demo-wrapper">
+  <div class="card standard">
+    <span class="badge">標準會員</span>
+    <h3 class="title">Cloud Starter</h3>
+    <p class="desc">使用全域 :root 主題變數渲染</p>
+    <button class="btn">立即開通</button>
+  </div>
+
+  <div class="card vip">
+    <span class="badge">尊榮 VIP</span>
+    <h3 class="title">Cloud Ultimate</h3>
+    <p class="desc">局部覆寫 --primary-color 為亮粉色</p>
+    <button class="btn">升級尊榮</button>
+  </div>
+</div>`,
+      css: `:root {
+  --primary-color: #38bdf8;
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --border-radius: 14px;
+}
+
+.demo-wrapper {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 30px 20px;
+  background-color: var(--bg-color);
+  font-family: sans-serif;
+}
+
+.card {
+  flex: 1;
+  max-width: 240px;
+  background-color: var(--card-bg);
+  border: 2px solid var(--primary-color);
+  border-radius: var(--border-radius);
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* 局部作用域覆寫：VIP 卡片只需改一行變數！ */
+.card.vip {
+  --primary-color: #ec4899;
+}
+
+.badge {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: #0f172a;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+}
+
+.title {
+  color: #f8fafc;
+  margin: 0 0 8px 0;
+  font-size: 18px;
+}
+
+.desc {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px 0;
+  background-color: var(--primary-color);
+  color: #0f172a;
+  border: none;
+  border-radius: var(--border-radius);
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}`
+    },
+    visualControls: [
+      {
+        property: '--primary-color',
+        label: '主題色彩 (--primary-color)',
+        type: 'color',
+        defaultValue: '#38bdf8'
+      },
+      {
+        property: '--card-bg',
+        label: '卡片背景 (--card-bg)',
+        type: 'color',
+        defaultValue: '#1e293b'
+      },
+      {
+        property: '--border-radius',
+        label: '圓角半徑 (--border-radius)',
+        type: 'range',
+        min: 0,
+        max: 30,
+        step: 2,
+        defaultValue: '14px',
+        unit: 'px'
+      }
+    ],
+    defaultVisualElementSelector: ':root',
+    challenge: {
+      title: '挑戰 12：定義 CSS 變數系統並實作 VIP 主題覆寫',
+      targetGoalDescription: '運用 :root 宣告全域 CSS 變數，使用 var() 調用，並在 VIP 卡片展示局部覆寫的層疊威力！',
+      instructions: [
+        '在 :root 中宣告三個變數：--primary: #38bdf8;、--card-bg: #1e293b;、--radius: 12px;',
+        '在 .theme-card 中使用變數：background-color: var(--card-bg);、border: 2px solid var(--primary);、border-radius: var(--radius);',
+        '在 .card-badge 與 .btn-action 中將 background-color 設為 var(--primary);',
+        '在 .theme-card.vip 中局部覆寫 --primary: #ec4899;，讓 VIP 專屬卡片自動換膚！'
+      ],
+      starterHtml: `<div class="container">
+  <div class="theme-card">
+    <span class="card-badge">一般會員</span>
+    <h3 class="card-title">基本方案</h3>
+    <p class="card-desc">使用全域 :root 主題變數</p>
+    <button class="btn-action">選擇方案</button>
+  </div>
+
+  <div class="theme-card vip">
+    <span class="card-badge">尊爵 VIP</span>
+    <h3 class="card-title">專業旗艦</h3>
+    <p class="card-desc">局部覆寫 --primary 變數</p>
+    <button class="btn-action">立即開通</button>
+  </div>
+</div>`,
+      starterCss: `/* 1. 在 :root 中宣告三個變數：--primary, --card-bg, --radius */
+:root {
+  /* 請在此宣告變數 */
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 30px 15px;
+  background-color: #0b1120;
+}
+
+/* 2. 為 .theme-card 套用變數 */
+.theme-card {
+  flex: 1;
+  max-width: 240px;
+  padding: 24px 20px;
+  text-align: center;
+  /* 請使用 var(--card-bg), var(--primary), var(--radius) */
+}
+
+/* 3. 為 VIP 卡片局部覆寫 --primary 變數 */
+.theme-card.vip {
+  /* 局部覆寫 --primary 為 #ec4899 */
+}
+
+.card-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: #0b1120;
+  margin-bottom: 12px;
+  /* 請設定 background-color 為 var(--primary) */
+}
+
+.card-title {
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  font-size: 18px;
+}
+
+.card-desc {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-action {
+  width: 100%;
+  padding: 10px 0;
+  color: #0b1120;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  /* 請設定 background-color 為 var(--primary) */
+}`,
+      solutionCss: `:root {
+  --primary: #38bdf8;
+  --card-bg: #1e293b;
+  --radius: 12px;
+}
+
+.container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  padding: 30px 15px;
+  background-color: #0b1120;
+}
+
+.theme-card {
+  flex: 1;
+  max-width: 240px;
+  padding: 24px 20px;
+  text-align: center;
+  background-color: var(--card-bg);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+}
+
+.theme-card.vip {
+  --primary: #ec4899;
+}
+
+.card-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 12px;
+  color: #0b1120;
+  margin-bottom: 12px;
+  background-color: var(--primary);
+}
+
+.card-title {
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  font-size: 18px;
+}
+
+.card-desc {
+  color: #94a3b8;
+  font-size: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-action {
+  width: 100%;
+  padding: 10px 0;
+  color: #0b1120;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  background-color: var(--primary);
+}`,
+      hints: [
+        '在 :root 中定義變數語法為：--primary: #38bdf8; 分號結尾。',
+        '調用變數時使用 var(--變數名稱)，例如 background-color: var(--card-bg);。',
+        '局部覆寫：在 .theme-card.vip { --primary: #ec4899; } 即可重新賦予該節點子孫全新的 primary 顏色！'
+      ],
+      checks: [
+        {
+          id: 'check-root-vars',
+          description: '在 :root 中成功宣告 --primary, --card-bg 與 --radius',
+          customTest: (css: string) => {
+            const hasPrimary = /--primary\s*:\s*#38bdf8/i.test(css) || /--primary\s*:/i.test(css);
+            const hasCardBg = /--card-bg\s*:\s*#1e293b/i.test(css) || /--card-bg\s*:/i.test(css);
+            const hasRadius = /--radius\s*:\s*12px/i.test(css) || /--radius\s*:/i.test(css);
+            return hasPrimary && hasCardBg && hasRadius;
+          }
+        },
+        {
+          id: 'check-card-bg-var',
+          description: '.theme-card 背景使用 var(--card-bg)',
+          regex: /var\s*\(\s*--card-bg\s*\)/i
+        },
+        {
+          id: 'check-card-border-var',
+          description: '.theme-card 邊框或圓角使用 var(--primary) 或 var(--radius)',
+          regex: /var\s*\(\s*--(primary|radius)\s*\)/i
+        },
+        {
+          id: 'check-btn-var',
+          description: '.card-badge 或 .btn-action 使用 var(--primary)',
+          regex: /(card-badge|btn-action)[\s\S]*?var\s*\(\s*--primary\s*\)/i
+        },
+        {
+          id: 'check-vip-override',
+          description: '.theme-card.vip 局部覆寫 --primary 為 #ec4899',
+          regex: /(\.theme-card\.vip|\.vip)[\s\S]*?--primary\s*:\s*#ec4899/i
+        }
+      ]
+    }
+  },
+
+  // -------------------------------------------------------------
+  // 第 13 模組：金手獎實戰題庫 (Spinner、卡片與終極置中)
   // -------------------------------------------------------------
   {
     id: 'css-competition-final',
     title: '金手獎終極考題：CSS Spinner 轉圈圈載入動畫',
     subtitle: '不用任何 JavaScript，純 CSS 打造絲滑加載指示器',
     category: 'competition',
-    categoryName: '第 12 模組：常見佈局與考場實戰',
+    categoryName: '第 13 模組：常見佈局與考場實戰',
     difficulty: '競賽實戰',
     concept: {
       summary: '技能競賽常考「純 CSS 繪製 UI 元件」。Spinner 轉圈圈考驗了正圓 (50%)、透明邊框與 @keyframes 360 度無窮旋轉！',
@@ -1488,7 +1883,7 @@ p {
 }`
     },
     challenge: {
-      title: '挑戰 12：親手實作純 CSS 旋轉加載器 (Spinner)',
+      title: '挑戰 13：親手實作純 CSS 旋轉加載器 (Spinner)',
       targetGoalDescription: '為 .my-spinner 宣告 border-radius: 50%; 與 animation: spin 1s linear infinite;。',
       instructions: [
         '為 .my-spinner 設定 border-radius: 50%;',
@@ -1527,7 +1922,7 @@ p {
   },
 
   // -------------------------------------------------------------
-  // 第 13 模組：畢業綜合考核（一頁式網站設計考題）
+  // 第 14 模組：畢業綜合考核（一頁式網站設計考題）
   // -------------------------------------------------------------
   {
     id: 'css-capstone-landing-page',

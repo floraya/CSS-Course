@@ -3,6 +3,10 @@ import Prism from 'prismjs';
 // Enhance Prism CSS definitions to match VS Code Dark+ color classifications
 if (Prism.languages.css) {
   Prism.languages.insertBefore('css', 'punctuation', {
+    'custom-property': {
+      pattern: /--[\w-]+/,
+      alias: 'variable'
+    },
     'color-hex': {
       pattern: /#(?:[0-9a-fA-F]{3,4}){1,2}\b/,
       alias: 'number'

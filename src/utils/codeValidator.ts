@@ -42,7 +42,8 @@ export function validateChallenge(
     // 1. If custom test provided
     if (check.customTest) {
       try {
-        const passed = !!check.customTest(cssCode, iframeDoc || document);
+        const doc = iframeDoc || (typeof document !== 'undefined' ? document : ({} as Document));
+        const passed = !!check.customTest(cssCode, doc);
         return {
           checkId: check.id,
           passed,

@@ -69,6 +69,8 @@ export const LessonSidebar: React.FC<LessonSidebarProps> = ({
         return { tag: '▦ Grid 二維網格', color: 'text-purple-300 bg-purple-950/70 border-purple-500/40' };
       case 'css-responsive-media-queries':
         return { tag: '📱 跨屏 RWD', color: 'text-cyan-300 bg-cyan-950/70 border-cyan-500/40' };
+      case 'css-custom-properties':
+        return { tag: '🎨 CSS 變數系統', color: 'text-rose-300 bg-rose-950/70 border-rose-500/40' };
       default:
         return null;
     }
